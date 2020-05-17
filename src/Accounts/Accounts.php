@@ -32,8 +32,8 @@ class Accounts extends Resource {
     }
 
     /**
-     * Get an organization
-     * @see https://developers.activecampaign.com/reference#get-organization
+     * Get an account
+     * @see https://developers.activecampaign.com/reference#retrieve-an-account
      *
      * @param int $id
      * @return string
@@ -42,68 +42,20 @@ class Accounts extends Resource {
     {
         $req = $this->client
             ->getClient()
-            ->get('/api/3/organizations/' . $id);
+            ->get('/api/3/accounts/' . $id);
 
         return $req->getBody()->getContents();
     }
 
     /**
-     * Update an organization
-     * @see https://developers.activecampaign.com/reference#update-organization
+     * List all accounts
+     * @see https://developers.activecampaign.com/reference#list-all-accounts
      *
-     * @param int $id
-     * @param array $organization
-     * @return string
+     * @param array $query_params
+     * @param int $limit
+     * @param int $offset
+     * @return mixed
      */
-    public function update(int $id, array $organization)
-    {
-        $req = $this->client
-            ->getClient()
-            ->put('/api/3/organizations/' . $id, [
-                'json' => [
-                    'organization' => $organization
-                ]
-            ]);
-
-        return $req->getBody()->getContents();
-    }
-
-    /**
-     * Delete an organization
-     * @see https://developers.activecampaign.com/reference#delete-organization
-     *
-     * @param int $id
-     * @return string
-     */
-    public function delete(int $id)
-    {
-        $req = $this->client
-            ->getClient()
-            ->delete('/api/3/organizations/' . $id);
-
-        return $req->getBody()->getContents();
-    }
-
-    /**
-     * Delete multiple organizations
-     * @see https://developers.activecampaign.com/reference#delete-multiple-organizations
-     *
-     * @param array $ids
-     * @return string
-     */
-    public function bulkDelete(array $ids)
-    {
-        $req = $this->client
-            ->getClient()
-            ->delete('/api/3/organizations/bulk_delete', [
-                'query' => [
-                    'ids' => $ids
-                ]
-            ]);
-
-        return $req->getBody()->getContents();
-    }
-
     public function listAll(array $query_params = [], $limit = 20, $offset = 0)
     {
         $query_params = array_merge($query_params, [
@@ -119,6 +71,4 @@ class Accounts extends Resource {
 
         return $req->getBody()->getContents();
     }
-
-
 }
