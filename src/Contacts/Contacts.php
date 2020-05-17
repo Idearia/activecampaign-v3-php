@@ -166,6 +166,22 @@ class Contacts extends Resource
     }
 
     /**
+     * List all tags the contact has
+     * @see https://developers.activecampaign.com/reference#create-contact
+     *
+     * @param int $id
+     * @return string
+     */
+    public function listContactTags(int $id)
+    {
+        $req = $this->client
+            ->getClient()
+            ->get('/api/3/contacts/' . $id . '/contactTags');
+
+        return $req->getBody()->getContents();
+    }
+
+    /**
      * Remove a tag from a contact
      * @see https://developers.activecampaign.com/reference#delete-contact-tag
      *
@@ -323,4 +339,27 @@ class Contacts extends Resource
         return 200 === $req->getStatusCode();
     }
 
+    /**
+     * Create a new account association
+     * @see https://developers.activecampaign.com/reference#account-contacts
+     *
+     * @param int $contactID
+     * @param int $accountID
+     * @return string
+     */
+    public function addContactToAccount(int $contactID, int $accountID)
+    {
+        $req = $this->client
+            ->getClient()
+            ->post('/api/3/accountContacts', [
+                'json' => [
+                    'accountContact' => [
+                        'contact' => $contactID,
+                        'account' => $accountID
+                    ]
+                ]
+            ]);
+
+        return $req->getBody()->getContents();
+    }
 }
