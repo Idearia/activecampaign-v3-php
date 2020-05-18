@@ -362,4 +362,20 @@ class Contacts extends Resource
 
         return $req->getBody()->getContents();
     }
+
+    /**
+     * Get Current Contact Account Association
+     * @see https://developers.activecampaign.com/reference#list-all-associations
+     * @param array $query_params
+     * @return string
+     */
+    public function getContactAccountAssociation(array $query_params = []) {
+        $req = $this->client
+            ->getClient()
+            ->get('/api/3/accountContacts', [
+                'query' => $query_params
+            ]);
+
+        return $req->getBody()->getContents();
+    }
 }
