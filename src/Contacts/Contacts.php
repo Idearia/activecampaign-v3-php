@@ -345,9 +345,10 @@ class Contacts extends Resource
      *
      * @param int $contactID
      * @param int $accountID
+     * @param string $jobTitle
      * @return string
      */
-    public function addContactToAccount(int $contactID, int $accountID)
+    public function addContactToAccount(int $contactID, int $accountID, string $jobTitle = '')
     {
         $req = $this->client
             ->getClient()
@@ -355,7 +356,8 @@ class Contacts extends Resource
                 'json' => [
                     'accountContact' => [
                         'contact' => $contactID,
-                        'account' => $accountID
+                        'account' => $accountID,
+                        'jobTitle' => $jobTitle
                     ]
                 ]
             ]);
