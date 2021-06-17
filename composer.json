@@ -1,5 +1,5 @@
 {
-  "name": "mediatoolkit/activecampaign-v3-php",
+  "name": "idearia/activecampaign-v3-php",
   "description": "PHP Wrapper for ActiveCampaign",
   "require": {
     "guzzlehttp/guzzle": "^7.0"
