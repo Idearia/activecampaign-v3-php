@@ -32,6 +32,27 @@ class Accounts extends Resource {
     }
 
     /**
+     * Update an account [ANCORA DA TESTARE]
+     * @see https://developers.activecampaign.com/reference#update-an-account-new
+     *
+     * @param int $id
+     * @param array $account
+     * @return string
+     */
+    public function update(int $id, array $account)
+    {
+        $req = $this->client
+            ->getClient()
+            ->put('/api/3/accounts/' . $id, [
+                'json' => [
+                    'account' => $account
+                ]
+            ]);
+
+        return $req->getBody()->getContents();
+    }
+
+    /**
      * Get an account
      * @see https://developers.activecampaign.com/reference#retrieve-an-account
      *
@@ -71,4 +92,59 @@ class Accounts extends Resource {
 
         return $req->getBody()->getContents();
     }
+
+    /**
+     * List all custom fields
+     * @see https://developers.activecampaign.com/reference#list-all-custom-fields
+     * @param array $query_params
+     * @return string
+     */
+    public function listAllCustomFields(array $query_params = [])
+    {
+        $req = $this->client
+            ->getClient()
+            ->get('/api/3/accountCustomFieldMeta', [
+                'query' => $query_params
+            ]);
+
+        return $req->getBody()->getContents();
+    }
+
+    /**
+     * List all custom field values [ANCORA DA TESTARE]
+     * @see https://developers.activecampaign.com/reference#list-all-custom-field-values-2
+     * @param array $query_params
+     * @return string
+     */
+    public function listAllCustomFieldValues(array $query_params)
+    {
+        $req = $this->client
+            ->getClient()
+            ->get('/api/3/accountCustomFieldData', [
+                'query' => $query_params
+            ]);
+
+        return $req->getBody()->getContents();
+    }
+
+    /**
+     * Bulk create custom field values [ANCORA DA TESTARE]
+     * @see https://developers.activecampaign.com/reference#bulk-create-a-custom-field-value-1
+     *
+     * @param array $customFieldValues
+     * @return string
+     */
+    public function bulkCreateCustomFieldValues(array $customFieldValues)
+    {
+        $req = $this->client
+            ->getClient()
+            ->post('/api/3/accountCustomFieldData/bulkCreate', [
+                'json' => [
+                    'account' => $customFieldValues
+                ]
+            ]);
+
+        return $req->getBody()->getContents();
+    }
+
 }
