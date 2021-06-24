@@ -3,3 +3,4 @@
 /tests/bootstrap.php
 /composer.lock
 .DS_Store
+.vscode
