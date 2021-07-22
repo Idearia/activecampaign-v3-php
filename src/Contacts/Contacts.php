@@ -67,7 +67,7 @@ class Contacts extends Resource
     public function updateContactAccount(?int $associationID, int $contactID, int $accountID)
     {
         if ($associationID === null) {
-            $this->addContactToAccount($contactID, $accountID);
+            return $this->addContactToAccount($contactID, $accountID);
         }
 
         $req = $this->client
