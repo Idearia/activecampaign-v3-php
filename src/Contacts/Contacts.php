@@ -83,6 +83,19 @@ class Contacts extends Resource
         return $req->getBody()->getContents();
     }
     
+    /**
+     * Crea un nuovo contatto associato ad un account
+     */
+    public function createWithAccount(array $contact, string $accountID)
+    {
+        // creo il contatto e mi segno l'id
+        $res = json_decode($this->create($contact), true);
+        $contactID = $res['contact']['id'];
+
+        // aggiungo l'associazione con l'account
+        $this->addContactToAccount($contactID, $accountID);
+    }
+    
     // -----------------------------------------------------------
     // CODICE DI MEDIATOOLKIT
     // -----------------------------------------------------------
