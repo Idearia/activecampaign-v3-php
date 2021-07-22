@@ -11,6 +11,56 @@ use Mediatoolkit\ActiveCampaign\Resource;
  */
 class Contacts extends Resource
 {
+    // -----------------------------------------------------------
+    // CODICE NOSTRO
+    // -----------------------------------------------------------
+
+    /**
+     * List all contacts
+     * 
+     * Li elenca tutti, iterando sulla paginazione
+     */
+    public function listAllLoop(array $query_params = [], int $contacts_per_page = 100, $debug = false): array
+    {
+        // Risposta JSON dal server
+        $res = $this->listAll($query_params, $contacts_per_page);
+
+        // Converto la risposta in array
+        $res = json_decode($res, true);
+
+        // Calcolo le pagine, i.e. numero di richieste che devo fare in totale
+        $total = (int) $res['meta']['total'];
+        $pages = (int) ceil($total / $contacts_per_page);
+        
+        $contacts = $res['contacts'] ?? [];
+
+        if ($debug) {
+            echo 'Scaricata pagina 1 / ' . $pages . PHP_EOL;
+        }
+
+        // Loop sulle pagine
+        for ($page = 1; $page < $pages; $page++) { 
+            $res = $this->listAll(
+                $query_params,
+                $contacts_per_page,
+                $page * $contacts_per_page
+            );
+            $res = json_decode($res, true);
+
+            // aggiungo i risultati
+            $contacts = array_merge($contacts, $res['contacts']);
+
+            if ($debug) {
+                echo 'Scaricata pagina ' . ($page + 1) . ' / ' . $pages . PHP_EOL;
+            }
+        }
+
+        return $contacts;
+    }
+    
+    // -----------------------------------------------------------
+    // CODICE DI MEDIATOOLKIT
+    // -----------------------------------------------------------
 
     /**
      * Create a contact
