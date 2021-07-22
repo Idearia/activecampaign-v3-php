@@ -57,6 +57,31 @@ class Contacts extends Resource
 
         return $contacts;
     }
+
+    /**
+     * Aggiorna l'account di un dato contatto. Serve però passare
+     * NON l'id del contatto
+     * MA l'id dell'associazione tra quel contatto e il vecchio account
+     */
+
+    public function updateContactAccount(?int $associationID, int $contactID, int $accountID)
+    {
+        if ($associationID === null) {
+            $this->addContactToAccount($contactID, $accountID);
+        }
+
+        $req = $this->client
+            ->getClient()
+            ->put('/api/3/accountContacts/' . $associationID, [
+                'json' => [
+                    'accountContact' => [
+                        'account' => $accountID,
+                    ]
+                ]
+            ]);
+
+        return $req->getBody()->getContents();
+    }
     
     // -----------------------------------------------------------
     // CODICE DI MEDIATOOLKIT
