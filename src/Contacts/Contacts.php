@@ -106,6 +106,25 @@ class Contacts extends Resource
         $this->addContactToAccount($contactID, $accountID);
     }
     
+    /**
+     * Bulk Import Contacts
+     * 
+     * Manda più richieste bulk per importare i contatti aggiungendo anche dei tag
+     * @see https://developers.activecampaign.com/reference#bulk-import-contacts
+     */
+    public function bulkImport(array $contacts)
+    {
+        $req = $this->client
+            ->getClient()
+            ->post('/api/3/import/bulk_import', [
+                'json' => [
+                    'contacts' => $contacts
+                ]
+            ]);
+
+        return $req->getBody()->getContents();
+    }
+    
     // -----------------------------------------------------------
     // CODICE DI MEDIATOOLKIT
     // -----------------------------------------------------------
