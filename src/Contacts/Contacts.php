@@ -107,6 +107,41 @@ class Contacts extends Resource
     }
     
     /**
+     * Tagga un blocco di contatti con una lista di tag
+     * 
+     * Manda più richieste bulk per importare i contatti aggiungendo anche dei tag
+     */
+    public function tagLoop(array $contacts = [], array $tags = [], int $contacts_per_page = 250)
+    {
+        // per fare dei test: altrimenti due richieste identiche ravvicinate tirano un errore 400
+        // shuffle($contacts);
+
+        // preparo i dati da mandare, composti da email + tag
+        $contacts = array_map(
+            fn($contact) => [
+                'email' => $contact['email'],
+                'tags' => $tags,
+            ],
+            $contacts
+        );
+        
+        $chunks = array_chunk($contacts, $contacts_per_page);
+        $chunks_num = count($chunks);
+
+        // Loop sui chunk
+        foreach ($chunks as $key => $chunk) {
+            try {
+                $this->bulkImport($chunk);
+            }
+            catch (\Exception $e) {
+                dump($e->getResponse()->getBody()->getContents());
+            }
+
+            echo 'Aggiunti Tag ' . ($key + 1) . ' / ' . $chunks_num . PHP_EOL;
+        }
+    }
+    
+    /**
      * Bulk Import Contacts
      * 
      * Manda più richieste bulk per importare i contatti aggiungendo anche dei tag
