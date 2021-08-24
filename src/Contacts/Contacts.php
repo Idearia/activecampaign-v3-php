@@ -39,22 +39,32 @@ class Contacts extends Resource
         }
 
         // Loop sulle pagine
-        for ($page = 1; $page < $pages; $page++) { 
-            $res = $this->listAll(
-                $query_params,
-                $contacts_per_page,
-                $page * $contacts_per_page
-            );
-            $res = json_decode($res, true);
+        for ($page = 1; $page < $pages; $page++) {
+            while (true) {
+                try {
+                    $res = $this->listAll(
+                        $query_params,
+                        $contacts_per_page,
+                        $page * $contacts_per_page
+                    );
+                    $res = json_decode($res, true);
 
-            // aggiungo i risultati
-            $contacts = array_merge($contacts, $res['contacts']);
+                    // aggiungo i risultati
+                    $contacts = array_merge($contacts, $res['contacts']);
 
-            if ($debug) {
-                echo 'Scaricata pagina ' . ($page + 1) . ' / ' . $pages . PHP_EOL;
+                    if ($debug) {
+                        echo 'Scaricata pagina ' . ($page + 1) . ' / ' . $pages . PHP_EOL;
+                    }
+
+                    break;
+                }
+                catch (\Exception $e) {
+                    echo 'Riprovo tra pochi secondi...';
+                    sleep(2);
+                }
             }
         }
-
+        
         return $contacts;
     }
 
