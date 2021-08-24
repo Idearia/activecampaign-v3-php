@@ -32,7 +32,7 @@ class Accounts extends Resource {
     }
 
     /**
-     * Update an account [ANCORA DA TESTARE]
+     * Update an account
      * @see https://developers.activecampaign.com/reference#update-an-account-new
      *
      * @param int $id
@@ -48,6 +48,22 @@ class Accounts extends Resource {
                     'account' => $account
                 ]
             ]);
+
+        return $req->getBody()->getContents();
+    }
+
+    /**
+     * Delete an account
+     * @see https://developers.activecampaign.com/reference#delete-an-account
+     *
+     * @param int $id
+     * @return string
+     */
+    public function delete(int $id)
+    {
+        $req = $this->client
+            ->getClient()
+            ->delete('/api/3/accounts/' . $id);
 
         return $req->getBody()->getContents();
     }
