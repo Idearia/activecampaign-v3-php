@@ -133,19 +133,29 @@ class Accounts extends Resource {
         }
 
         // Loop sulle pagine
-        for ($page = 1; $page < $pages; $page++) { 
-            $res = $this->listAll(
-                $query_params,
-                $accounts_per_page,
-                $page * $accounts_per_page
-            );
-            $res = json_decode($res, true);
-
-            // aggiungo i risultati
-            $accounts = array_merge($accounts, $res['accounts']);
-
-            if ($debug) {
-                echo 'Scaricata pagina ' . ($page + 1) . ' / ' . $pages . PHP_EOL;
+        for ($page = 1; $page < $pages; $page++) {
+            while (true) {
+                try {
+                    $res = $this->listAll(
+                        $query_params,
+                        $accounts_per_page,
+                        $page * $accounts_per_page
+                    );
+                    $res = json_decode($res, true);
+                    
+                    // aggiungo i risultati
+                    $accounts = array_merge($accounts, $res['accounts']);
+                    
+                    if ($debug) {
+                        echo 'Scaricata pagina ' . ($page + 1) . ' / ' . $pages . PHP_EOL;
+                    }
+                    
+                    break;
+                }
+                catch (\Exception $e) {
+                    dump('Riprovo tra pochi secondi...');
+                    sleep(2);
+                }
             }
         }
 
