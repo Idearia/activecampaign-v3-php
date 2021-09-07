@@ -2,10 +2,10 @@
 
 namespace Mediatoolkit\ActiveCampaign;
 
-use Throwable;
 use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use Throwable;
 
 class Client
 {
