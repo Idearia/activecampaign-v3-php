@@ -35,33 +35,23 @@ class Contacts extends Resource
         $contacts = $res['contacts'] ?? [];
 
         if ($debug) {
-            echo 'Scaricata pagina 1 / ' . $pages . PHP_EOL;
+            dump('Scaricata pagina 1 / ' . $pages);
         }
 
         // Loop sulle pagine
         for ($page = 1; $page < $pages; $page++) {
-            while (true) {
-                try {
-                    $res = $this->listAll(
-                        $query_params,
-                        $contacts_per_page,
-                        $page * $contacts_per_page
-                    );
-                    $res = json_decode($res, true);
+            $res = $this->listAll(
+                $query_params,
+                $contacts_per_page,
+                $page * $contacts_per_page
+            );
+            $res = json_decode($res, true);
 
-                    // aggiungo i risultati
-                    $contacts = array_merge($contacts, $res['contacts']);
+            // aggiungo i risultati
+            $contacts = array_merge($contacts, $res['contacts']);
 
-                    if ($debug) {
-                        echo 'Scaricata pagina ' . ($page + 1) . ' / ' . $pages . PHP_EOL;
-                    }
-
-                    break;
-                }
-                catch (\Exception $e) {
-                    echo 'Riprovo tra pochi secondi...';
-                    sleep(2);
-                }
+            if ($debug) {
+                dump('Scaricata pagina ' . ($page + 1) . ' / ' . $pages);
             }
         }
         
@@ -130,14 +120,8 @@ class Contacts extends Resource
 
         // Loop sui chunk
         foreach ($chunks as $key => $chunk) {
-            try {
-                $this->bulkImport($chunk);
-            }
-            catch (\Exception $e) {
-                dump($e->getResponse()->getBody()->getContents());
-            }
-
-            echo 'Aggiunti Tag ' . ($key + 1) . ' / ' . $chunks_num . PHP_EOL;
+            $this->bulkImport($chunk);
+            dump('Aggiunti Tag ' . ($key + 1) . ' / ' . $chunks_num);
         }
     }
     
