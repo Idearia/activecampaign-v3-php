@@ -5,6 +5,9 @@ namespace Mediatoolkit\ActiveCampaign;
 use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Exception\RequestException;
 use Throwable;
 
 class Client
@@ -61,6 +64,14 @@ class Client
     protected $retry_delay;
 
     /**
+     * Le opzioni passate al client di Guzzle
+     *
+     * @see https://docs.guzzlephp.org/en/stable/request-options.html
+     * @var array
+     */
+    protected $options;
+
+    /**
      * @var \GuzzleHttp\Client
      */
     private $client;
@@ -76,8 +87,7 @@ class Client
         $this->api_token = $api_token;
         $this->event_tracking_actid = $event_tracking_actid;
         $this->event_tracking_key = $event_tracking_key;
-
-        $guzzleOptions = [
+        $this->options = [
             'base_uri' => $this->api_url,
             'headers' => [
                 'User-Agent' => self::LIB_USER_AGENT,
@@ -86,15 +96,7 @@ class Client
             ]
         ];
 
-        // Imposta il retry automatico
-        // https://github.com/guzzle/guzzle/issues/1806#issuecomment-293931737
-        if ($this->retry_times) {
-            $handlerStack = HandlerStack::create(new CurlHandler());
-            $handlerStack->push(Middleware::retry($this->retryDecider(), $this->retryDelay()));
-            $guzzleOptions['handler'] = $handlerStack;
-        }
-
-        $this->client = new \GuzzleHttp\Client($guzzleOptions);
+        $this->client = new \GuzzleHttp\Client($this->options);
 
         if (!is_null($this->event_tracking_actid) && !is_null($this->event_tracking_key)) {
             $this->event_tracking_client = new \GuzzleHttp\Client([
@@ -156,12 +158,22 @@ class Client
 
     /**
      * Attiva la modalità retry del client
+     *
+     * @see https://github.com/guzzle/guzzle/issues/1806#issuecomment-293931737
      * @return Mediatoolkit\ActiveCampaign\Client
      */
-    public function withRetry(int $times = 10, float $delay = 0.5)
+    public function withRetry(int $retry_times = 10, float $retry_delay = 0.5)
     {
-        $this->retry_times = $times;
-        $this->retry_delay = $delay;
+        // Imposta il retry automatico
+        $handlerStack = HandlerStack::create(new CurlHandler());
+        $handlerStack->push(Middleware::retry(
+            $this->retryDecider($retry_times),
+            $this->retryDelay($retry_delay)
+        ));
+        $this->options['handler'] = $handlerStack;
+
+        $this->client = new \GuzzleHttp\Client($this->options);
+
         return $this;
     }
 
@@ -169,58 +181,45 @@ class Client
      * Data un'eccezione ritornata dal client, determina
      * se riprovare o meno a lanciare la richiesta.
      */
-    // public function retryDecider() // https://github.com/guzzle/guzzle/issues/1806
-    // {
-    //     return function (
-    //         $retries,
-    //         Request $request,
-    //         Response $response = null,
-    //         RequestException $exception = null
-    //     ) {
-    //         // Limit the number of retries to 5
-    //         if ($retries >= 5) {
-    //             return false;
-    //         }
+    public function retryDecider(int $retry_times)
+    {
+        return function (
+            $retries,
+            Request $request,
+            Response $response = null,
+            RequestException $exception = null
+        ) use ($retry_times) {
+            // Esegue una richiesta un certo numero di volte al massimo
+            // i.e. al massimo $retry_times volte
+            if ($retries >= $retry_times) {
+                return false;
+            }
 
-    //         // Retry connection exceptions
-    //         if ($exception instanceof ConnectException) {
-    //             return true;
-    //         }
+            // Riesegue la richiesta in caso di ConnectException
+            if ($exception instanceof ConnectException) {
+                return true;
+            }
 
-    //         if ($response) {
-    //             // Retry on server errors
-    //             if ($response->getStatusCode() >= 500 ) {
-    //                 return true;
-    //             }
-    //         }
+            if ($response) {
+                // Riprova la richiesta se c'è un errore da parte del server
+                if ($response->getStatusCode() >= 500 ) {
+                    return true;
+                }
+            }
 
-    //         return false;
-    //     };
-    // }
-    // public function retryDecider( Throwable $th )
-    // {
-    //     if (! $this->retry) {
-    //         return false;
-    //     }
-
-    //     // La richiesta verrà rilanciata nel caso in cui l'errore
-    //     // è dovuto alle troppe richieste al secondo.
-    //     if ( $th->getMessage() === 'piripicchio' || $th->getCode() === 'parapocchio') {
-    //         return true;
-    //     }
-
-    //     return false;
-    // }
+            return false;
+        };
+    }
 
     /**
      * delay 1s 2s 3s 4s 5s
      *
      * @return Closure
      */
-    // public function retryDelay() // https://github.com/guzzle/guzzle/issues/1806
-    // {
-    //     return function ($numberOfRetries) {
-    //         return 1000 * $numberOfRetries;
-    //     };
-    // }
+    public function retryDelay(float $retry_delay)
+    {
+        return function ($numberOfRetries) use ($retry_delay) {
+            return 1000 * $retry_delay * $numberOfRetries;
+        };
+    }
 }
