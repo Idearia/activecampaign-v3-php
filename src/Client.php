@@ -8,6 +8,7 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
+use Exception;
 use Throwable;
 
 class Client
@@ -187,7 +188,7 @@ class Client
             $retries,
             Request $request,
             Response $response = null,
-            RequestException $exception = null
+            Exception $exception = null
         ) use ($retry_times) {
             // Esegue una richiesta un certo numero di volte al massimo
             // i.e. al massimo $retry_times volte
