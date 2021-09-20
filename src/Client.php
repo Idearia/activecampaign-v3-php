@@ -201,8 +201,12 @@ class Client
                 return true;
             }
 
-            // Riesegue la richiesta in caso di `cURL error 56: OpenSSL SSL_read`
             if ($exception instanceof RequestException) {
+                // Riesegue la richiesta in caso di `cURL error 35: OpenSSL SSL_read`
+                if (str_contains($exception->getMessage(), 'cURL error 35')) {
+                    return true;
+                }
+                // Riesegue la richiesta in caso di `cURL error 56: OpenSSL SSL_read`
                 if (str_contains($exception->getMessage(), 'cURL error 56')) {
                     return true;
                 }
