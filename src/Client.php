@@ -213,8 +213,15 @@ class Client
             }
 
             if ($response) {
+                $code = $response->getStatusCode();
+                
                 // Riprova la richiesta se c'è un errore da parte del server
-                if ($response->getStatusCode() >= 500 ) {
+                if ($code >= 500 ) {
+                    return true;
+                }
+                // Riprova la richiesta in caso di Bad Request
+                // Speriamo di poterlo togliere, ma purtroppo dobbiamo metterlo
+                if ($code == 400 ) {
                     return true;
                 }
             }
