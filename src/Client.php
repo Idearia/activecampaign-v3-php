@@ -5,9 +5,12 @@ namespace Mediatoolkit\ActiveCampaign;
 use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Exception;
 use Throwable;
 
@@ -165,12 +168,30 @@ class Client
      */
     public function withRetry(int $retry_times = 10, float $retry_delay = 0.5)
     {
-        // Imposta il retry automatico
         $handlerStack = HandlerStack::create(new CurlHandler());
+
+        $logger = new Logger('Guzzle');
+        $logger->pushHandler(
+            new StreamHandler(storage_path(
+                'logs' . DIRECTORY_SEPARATOR . 'guzzle-' . date('Y-m-d') . '.log'
+            )),
+            Logger::DEBUG
+        );
+
+        // Logga tutte le richieste
+        $handlerStack->push(Middleware::log(
+            $logger,
+            new MessageFormatter(
+                '{method} {uri} HTTP/{version} {req_body} RESPONSE: {code} - {res_body}'
+            )
+        ));
+        
+        // Imposta il retry automatico
         $handlerStack->push(Middleware::retry(
             $this->retryDecider($retry_times),
             $this->retryDelay($retry_delay)
         ));
+
         $this->options['handler'] = $handlerStack;
 
         $this->client = new \GuzzleHttp\Client($this->options);
