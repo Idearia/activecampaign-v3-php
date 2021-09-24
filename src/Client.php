@@ -9,8 +9,7 @@ use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
+use GuzzleLogMiddleware\LogMiddleware;
 use Exception;
 use Throwable;
 
@@ -96,12 +95,12 @@ class Client
             'headers' => [
                 'User-Agent' => self::LIB_USER_AGENT,
                 self::HEADER_AUTH_KEY => $this->api_token,
-                'Accept' => 'application/json'
-            ]
+                'Accept' => 'application/json',
+            ],
+            'handler' => HandlerStack::create(new CurlHandler()),
         ];
 
-        $this->client = new \GuzzleHttp\Client($this->options);
-
+        // Client per l'event tracking
         if (!is_null($this->event_tracking_actid) && !is_null($this->event_tracking_key)) {
             $this->event_tracking_client = new \GuzzleHttp\Client([
                 'base_uri' => self::EVENT_TRACKING_URL,
@@ -166,37 +165,61 @@ class Client
      * @see https://github.com/guzzle/guzzle/issues/1806#issuecomment-293931737
      * @return Mediatoolkit\ActiveCampaign\Client
      */
+    public function withMiddleware($middleware)
+    {
+        $handlerStack = $this->getHandlerStack();
+        $handlerStack->push($middleware);
+        $this->options['handler'] = $handlerStack;
+
+        return $this;
+    }
+
+    /**
+     * Attiva la modalità retry del client
+     *
+     * @see https://github.com/guzzle/guzzle/issues/1806#issuecomment-293931737
+     * @return Mediatoolkit\ActiveCampaign\Client
+     */
     public function withRetry(int $retry_times = 10, float $retry_delay = 0.5)
     {
-        $handlerStack = HandlerStack::create(new CurlHandler());
-
-        $logger = new Logger('Guzzle');
-        $logger->pushHandler(
-            new StreamHandler(storage_path(
-                'logs' . DIRECTORY_SEPARATOR . 'guzzle-' . date('Y-m-d') . '.log'
-            )),
-            Logger::DEBUG
-        );
-
-        // Logga tutte le richieste
-        $handlerStack->push(Middleware::log(
-            $logger,
-            new MessageFormatter(
-                '{method} {uri} HTTP/{version} {req_body} RESPONSE: {code} - {res_body}'
-            )
-        ));
-        
-        // Imposta il retry automatico
-        $handlerStack->push(Middleware::retry(
+        return $this->withMiddleware(Middleware::retry(
             $this->retryDecider($retry_times),
             $this->retryDelay($retry_delay)
         ));
+    }
 
-        $this->options['handler'] = $handlerStack;
+    /**
+     * Attiva la modalità di logging del client,
+     * per loggare tutte le richieste e risposte
+     *
+     * TODO: filepath: storage_path('logs' . DIRECTORY_SEPARATOR . 'guzzle-' . date('Y-m-d') . '.log');
+     * TODO: valutiamo se creare la nostra strategia di logging
+     * @see https://github.com/gmponos/guzzle-log-middleware#handlers
+     *
+     * @see https://github.com/gmponos/guzzle-log-middleware
+     * @return Mediatoolkit\ActiveCampaign\Client
+     */
+    public function withLog($logger)
+    {
+        return $this->withMiddleware(new LogMiddleware($logger));
+    }
 
+    /**
+     * Crea il client di Guzzle con le opzioni passate
+     */
+    public function create()
+    {
         $this->client = new \GuzzleHttp\Client($this->options);
 
         return $this;
+    }
+
+    /**
+     * Ritorna lo handlerStack del client Guzzle
+     */
+    protected function getHandlerStack()
+    {
+        return $this->options['handler'];
     }
 
     /**
