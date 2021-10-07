@@ -16,17 +16,18 @@ use Throwable;
 class Client
 {
 
-    const HEADER_AUTH_KEY = 'Api-Token';
+    public const HEADER_AUTH_KEY = 'Api-Token';
 
-    const LIB_USER_AGENT = 'activecampaign-v3-php/1.0';
+    public const LIB_USER_AGENT = 'activecampaign-v3-php/1.0';
 
-    const API_VERSION_URL = '/api/3';
+    public const API_VERSION_URL = '/api/3';
 
-    const EVENT_TRACKING_URL = 'https://trackcmp.net/event';
+    public const EVENT_TRACKING_URL = 'https://trackcmp.net/event';
 
     /**
      * ActiveCampaign API URL.
      * Format is https://YOUR_ACCOUNT_NAME.api-us1.com
+     *
      * @var string
      */
     protected $api_url;
@@ -34,6 +35,7 @@ class Client
     /**
      * ActiveCampaign API token
      * Get yours from developer settings.
+     *
      * @var string
      */
     protected $api_token;
@@ -41,6 +43,7 @@ class Client
     /**
      * Event Tracking ACTID
      * Get yours from Settings > Tracking > Event Tracking > Event Tracking API
+     *
      * @var string
      */
     protected $event_tracking_actid;
@@ -48,6 +51,7 @@ class Client
     /**
      * Event Tracking Key
      * Get yours from Settings > Tracking > Event Tracking > Event Key
+     *
      * @var string
      */
     protected $event_tracking_key;
@@ -56,12 +60,14 @@ class Client
      * In caso di raggiungimento della quota AC di richieste al secondo,
      * il client riproverà a lanciare la richiesta per un massimo di $retry
      * volte.
+     *
      * @var int
      */
     protected $retry_times;
 
     /**
      * Numero di secondi da aspettare prima di fare un retry.
+     *
      * @var float
      */
     protected $retry_delay;
@@ -74,14 +80,10 @@ class Client
      */
     protected $options;
 
-    /**
-     * @var \GuzzleHttp\Client
-     */
+    /** @var \GuzzleHttp\Client */
     private $client;
 
-    /**
-     * @var \GuzzleHttp\Client
-     */
+    /** @var \GuzzleHttp\Client */
     private $event_tracking_client;
 
     public function __construct($api_url, $api_token, $event_tracking_actid = null, $event_tracking_key = null)
@@ -97,21 +99,21 @@ class Client
                 self::HEADER_AUTH_KEY => $this->api_token,
                 'Accept' => 'application/json',
             ],
-            'handler' => HandlerStack::create(new CurlHandler()),
+            'handler' => HandlerStack::create(new CurlHandler),
         ];
 
         // Client per l'event tracking
-        if (!is_null($this->event_tracking_actid) && !is_null($this->event_tracking_key)) {
+        if (! is_null($this->event_tracking_actid) && ! is_null($this->event_tracking_key)) {
             $this->event_tracking_client = new \GuzzleHttp\Client([
                 'base_uri' => self::EVENT_TRACKING_URL,
                 'headers' => [
                     'User-Agent' => self::LIB_USER_AGENT,
-                    'Accept' => 'application/json'
+                    'Accept' => 'application/json',
                 ],
                 'form_params' => [
                     'actid' => $this->event_tracking_actid,
-                    'key' => $this->event_tracking_key
-                ]
+                    'key' => $this->event_tracking_key,
+                ],
             ]);
         }
     }
@@ -194,6 +196,7 @@ class Client
      *
      * TODO: filepath: storage_path('logs' . DIRECTORY_SEPARATOR . 'guzzle-' . date('Y-m-d') . '.log');
      * TODO: valutiamo se creare la nostra strategia di logging
+     *
      * @see https://github.com/gmponos/guzzle-log-middleware#handlers
      *
      * @see https://github.com/gmponos/guzzle-log-middleware
@@ -260,12 +263,12 @@ class Client
                 $code = $response->getStatusCode();
                 
                 // Riprova la richiesta se c'è un errore da parte del server
-                if ($code >= 500 ) {
+                if ($code >= 500) {
                     return true;
                 }
                 // Riprova la richiesta in caso di Bad Request
                 // Speriamo di poterlo togliere, ma purtroppo dobbiamo metterlo
-                if ($code == 400 ) {
+                if ($code === 400) {
                     return true;
                 }
             }

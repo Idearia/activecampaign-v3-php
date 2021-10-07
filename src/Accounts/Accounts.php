@@ -6,13 +6,16 @@ use Mediatoolkit\ActiveCampaign\Resource;
 
 /**
  * Class Accounts
+ *
  * @package Mediatoolkit\ActiveCampaign\Accounts
  * @see https://developers.activecampaign.com/reference#accounts
  */
-class Accounts extends Resource {
+class Accounts extends Resource
+{
 
     /**
      * Create an account
+     *
      * @see https://developers.activecampaign.com/reference#create-an-account
      *
      * @param array $account
@@ -24,8 +27,8 @@ class Accounts extends Resource {
             ->getClient()
             ->post('/api/3/accounts', [
                 'json' => [
-                    'account' => $account
-                ]
+                    'account' => $account,
+                ],
             ]);
 
         return $req->getBody()->getContents();
@@ -33,6 +36,7 @@ class Accounts extends Resource {
 
     /**
      * Update an account
+     *
      * @see https://developers.activecampaign.com/reference#update-an-account-new
      *
      * @param int $id
@@ -45,8 +49,8 @@ class Accounts extends Resource {
             ->getClient()
             ->put('/api/3/accounts/' . $id, [
                 'json' => [
-                    'account' => $account
-                ]
+                    'account' => $account,
+                ],
             ]);
 
         return $req->getBody()->getContents();
@@ -54,6 +58,7 @@ class Accounts extends Resource {
 
     /**
      * Delete an account
+     *
      * @see https://developers.activecampaign.com/reference#delete-an-account
      *
      * @param int $id
@@ -70,6 +75,7 @@ class Accounts extends Resource {
 
     /**
      * Get an account
+     *
      * @see https://developers.activecampaign.com/reference#retrieve-an-account
      *
      * @param int $id
@@ -86,6 +92,7 @@ class Accounts extends Resource {
 
     /**
      * List all accounts
+     *
      * @see https://developers.activecampaign.com/reference#list-all-accounts
      *
      * @param array $query_params
@@ -97,13 +104,13 @@ class Accounts extends Resource {
     {
         $query_params = array_merge($query_params, [
             'limit' => $limit,
-            'offset' => $offset
+            'offset' => $offset,
         ]);
 
         $req = $this->client
             ->getClient()
             ->get('/api/3/accounts', [
-                'query' => $query_params
+                'query' => $query_params,
             ]);
 
         return $req->getBody()->getContents();
@@ -111,7 +118,7 @@ class Accounts extends Resource {
 
     /**
      * List all accounts
-     * 
+     *
      * Li elenca tutti, iterando sulla paginazione
      */
     public function listAllLoop(array $query_params = [], int $accounts_per_page = 100, $debug = false): array
@@ -154,6 +161,7 @@ class Accounts extends Resource {
 
     /**
      * List all custom fields
+     *
      * @see https://developers.activecampaign.com/reference#list-all-custom-fields
      * @param array $query_params
      * @return string
@@ -163,7 +171,7 @@ class Accounts extends Resource {
         $req = $this->client
             ->getClient()
             ->get('/api/3/accountCustomFieldMeta', [
-                'query' => $query_params
+                'query' => $query_params,
             ]);
 
         return $req->getBody()->getContents();
@@ -171,9 +179,9 @@ class Accounts extends Resource {
 
     /**
      * List all custom field values
-     * 
+     *
      * Ritorna null apparentemente per risposte troppo grosse (e.g. Autoluce)
-     * 
+     *
      * @see https://developers.activecampaign.com/reference#list-all-custom-field-values-2
      */
     public function listAllCustomFieldValues(array $query_params = [])
@@ -181,7 +189,7 @@ class Accounts extends Resource {
         $req = $this->client
             ->getClient()
             ->get('/api/3/accountCustomFieldData', [
-                'query' => $query_params
+                'query' => $query_params,
             ]);
 
         return $req->getBody()->getContents();
@@ -193,7 +201,7 @@ class Accounts extends Resource {
     public function getFields(int $id): array
     {
         return json_decode($this->listAllCustomFieldValues([
-            'filters[customerAccountId]' => $id
+            'filters[customerAccountId]' => $id,
         ]), true);
     }
 
@@ -214,9 +222,9 @@ class Accounts extends Resource {
 
     /**
      * Bulk create custom field values [TESTATA SU POSTMAN]
-     * 
+     *
      * In realtà fa create or update
-     * 
+     *
      * @see https://developers.activecampaign.com/reference#bulk-create-a-custom-field-value-1
      *
      * @param array $customFieldValues
@@ -228,11 +236,10 @@ class Accounts extends Resource {
             ->getClient()
             ->post('/api/3/accountCustomFieldData/bulkCreate', [
                 'json' => [
-                    'account' => $customFieldValues
-                ]
+                    'account' => $customFieldValues,
+                ],
             ]);
 
         return $req->getBody()->getContents();
     }
-
 }
