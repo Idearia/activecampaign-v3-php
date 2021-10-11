@@ -60,6 +60,60 @@ class Contacts extends Resource
     }
 
     /**
+     * List all contacts
+     *
+     * Li elenca tutti, iterando sulla paginazione, e aggiunge pure i contactLists
+     */
+    public function listAllWithContactLists($debug = false, int $contacts_per_page = 100): array
+    {
+        // aggiungo ai parametri della query i contactLists
+        $query_params = [
+            'include' => 'contactLists',
+        ];
+
+        // Risposta JSON dal server
+        $res = $this->listAll($query_params, $contacts_per_page);
+
+        // Converto la risposta in array
+        $res = json_decode($res, true);
+
+        // Calcolo le pagine, i.e. numero di richieste che devo fare in totale
+        $total = (int) $res['meta']['total'];
+        $pages = (int) ceil($total / $contacts_per_page);
+        
+        // Estraggo le informazioni su contatti e contactLists
+        $contacts = $res['contacts'] ?? [];
+        $contactLists = $res['contactLists'] ?? [];
+
+        if ($debug) {
+            dump('Scaricata pagina 1 / ' . $pages);
+        }
+
+        // Loop sulle pagine
+        for ($page = 1; $page < $pages; $page++) {
+            $res = $this->listAll(
+                $query_params,
+                $contacts_per_page,
+                $page * $contacts_per_page
+            );
+            $res = json_decode($res, true);
+
+            // aggiungo i risultati
+            $contacts = array_merge($contacts, $res['contacts']);
+            $contactLists = array_merge($contactLists, $res['contactLists']);
+
+            if ($debug) {
+                dump('Scaricata pagina ' . ($page + 1) . ' / ' . $pages);
+            }
+        }
+        
+        return [
+            'contacts' => $contacts,
+            'contactLists' => $contactLists,
+        ];
+    }
+
+    /**
      * Aggiorna l'account di un dato contatto. Serve però passare
      * NON l'id del contatto
      * MA l'id dell'associazione tra quel contatto e il vecchio account
