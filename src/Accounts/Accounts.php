@@ -160,6 +160,66 @@ class Accounts extends Resource
     }
 
     /**
+     * List all accounts
+     *
+     * Li elenca tutti, iterando sulla paginazione, e aggiunge pure i custom fields
+     */
+    public function listAllWithCustomFields($debug = false, int $accounts_per_page = 100): array
+    {
+        // aggiungo ai parametri della query i contactLists
+        $query_params = [
+            'include' => 'accountCustomFieldData.customerAccountCustomFieldMetum',
+        ];
+
+        // Risposta JSON dal server
+        $res = $this->listAll($query_params, $accounts_per_page);
+
+        // Converto la risposta in array
+        $res = json_decode($res, true);
+
+        // Calcolo le pagine, i.e. numero di richieste che devo fare in totale
+        $total = (int) $res['meta']['total'];
+        $pages = (int) ceil($total / $accounts_per_page);
+        
+        // Estraggo le informazioni su account e custom fields
+        $accounts = $res['accounts'] ?? [];
+        $customFields = $res['customerAccountCustomFieldData'] ?? [];
+        $customFieldsMeta = $res['customerAccountCustomFieldMeta'] ?? [];
+
+        if ($debug) {
+            dump('Scaricata pagina 1 / ' . $pages);
+        }
+
+        // Loop sulle pagine
+        for ($page = 1; $page < $pages; $page++) {
+            $res = $this->listAll(
+                $query_params,
+                $accounts_per_page,
+                $page * $accounts_per_page
+            );
+            $res = json_decode($res, true);
+
+            // aggiungo i risultati
+            $accounts = array_merge($accounts ,$res['accounts']);
+            $customFields = array_merge($customFields ,$res['customerAccountCustomFieldData']);
+            $customFieldsMeta = array_merge($customFieldsMeta ,$res['customerAccountCustomFieldMeta']);
+
+            if ($debug) {
+                dump('Scaricata pagina ' . ($page + 1) . ' / ' . $pages);
+            }
+        }
+
+        // rimuovo eventuali copie inutili nei custom fields meta
+        $customFieldsMeta = array_unique($customFieldsMeta, SORT_REGULAR);
+
+        return [
+            'accounts' => $accounts,
+            'customFields' => $customFields,
+            'customFieldsMeta' => $customFieldsMeta,
+        ];
+    }
+
+    /**
      * List all custom fields
      *
      * @see https://developers.activecampaign.com/reference#list-all-custom-fields
@@ -193,31 +253,6 @@ class Accounts extends Resource
             ]);
 
         return $req->getBody()->getContents();
-    }
-
-    /**
-     * Ritorna i fields di un account, noto il suo id su AC
-     */
-    public function getFields(int $id): array
-    {
-        return json_decode($this->listAllCustomFieldValues([
-            'filters[customerAccountId]' => $id,
-        ]), true);
-    }
-
-    /**
-     * Chiede ad AC qual è il valore di un certo campo noti
-     * l'id dell'account e l'id del campo stesso
-     */
-    public function getFieldValue(int $account_id, int $field_id)
-    {
-        $fields = $this->getFields($account_id)['accountCustomFieldData'];
-        $fields = array_filter(
-            $fields,
-            fn($field) => $field['customFieldId'] == $field_id
-        );
-
-        return $fields ? array_pop($fields)['fieldValue'] : null;
     }
 
     /**
