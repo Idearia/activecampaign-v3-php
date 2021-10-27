@@ -249,12 +249,8 @@ class Client
             }
 
             if ($exception instanceof RequestException) {
-                // Riesegue la richiesta in caso di `cURL error 35: OpenSSL SSL_read`
-                if (str_contains($exception->getMessage(), 'cURL error 35')) {
-                    return true;
-                }
-                // Riesegue la richiesta in caso di `cURL error 56: OpenSSL SSL_read`
-                if (str_contains($exception->getMessage(), 'cURL error 56')) {
+                // Riesegue la richiesta in caso di `cURL error`
+                if (str_contains($exception->getMessage(), 'cURL error')) {
                     return true;
                 }
             }
@@ -266,9 +262,9 @@ class Client
                 if ($code >= 500) {
                     return true;
                 }
-                // Riprova la richiesta in caso di Bad Request
+                // Riprova la richiesta in caso di Forbidden
                 // Speriamo di poterlo togliere, ma purtroppo dobbiamo metterlo
-                if ($code === 400) {
+                if ($code === 403) {
                     return true;
                 }
             }
