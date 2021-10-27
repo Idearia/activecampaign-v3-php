@@ -200,9 +200,9 @@ class Accounts extends Resource
             $res = json_decode($res, true);
 
             // aggiungo i risultati
-            $accounts = array_merge($accounts ,$res['accounts']);
-            $customFields = array_merge($customFields ,$res['customerAccountCustomFieldData']);
-            $customFieldsMeta = array_merge($customFieldsMeta ,$res['customerAccountCustomFieldMeta']);
+            $accounts = array_merge($accounts, $res['accounts']);
+            $customFields = array_merge($customFields, $res['customerAccountCustomFieldData']);
+            $customFieldsMeta = array_merge($customFieldsMeta, $res['customerAccountCustomFieldMeta']);
 
             if ($debug) {
                 dump('Scaricata pagina ' . ($page + 1) . ' / ' . $pages);
