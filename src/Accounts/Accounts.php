@@ -117,6 +117,21 @@ class Accounts extends Resource
     }
 
     /**
+     * Ottiene i custom field di un account
+     */
+    public function getAccountCustomFields(int $account_id): array
+    {
+        $req = $this->client
+            ->getClient()
+            ->get("/api/3/accounts/$account_id/accountCustomFieldData");
+        
+        $json_response = $req->getBody()->getContents();
+        
+        return json_decode($json_response, true)['customerAccountCustomFieldData'];
+    }
+
+
+    /**
      * List all accounts
      *
      * Li elenca tutti, iterando sulla paginazione
