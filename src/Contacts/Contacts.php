@@ -119,18 +119,18 @@ class Contacts extends Resource
      * MA l'id dell'associazione tra quel contatto e il vecchio account
      */
 
-    public function updateContactAccount(?int $associationID, int $contactID, int $accountID)
+    public function updateContactAccount(?int $association_id, int $contact_id, int $account_id)
     {
-        if ($associationID === null) {
-            return $this->addContactToAccount($contactID, $accountID);
+        if ($association_id === null) {
+            return $this->addContactToAccount($contact_id, $account_id);
         }
 
         $req = $this->client
             ->getClient()
-            ->put('/api/3/accountContacts/' . $associationID, [
+            ->put('/api/3/accountContacts/' . $association_id, [
                 'json' => [
                     'accountContact' => [
-                        'account' => $accountID,
+                        'account' => $account_id,
                     ],
                 ],
             ]);
@@ -141,14 +141,14 @@ class Contacts extends Resource
     /**
      * Crea un nuovo contatto associato ad un account
      */
-    public function createWithAccount(array $contact, string $accountID)
+    public function createWithAccount(array $contact, string $account_id)
     {
         // creo il contatto e mi segno l'id
         $res = json_decode($this->create($contact), true);
-        $contactID = $res['contact']['id'];
+        $contact_id = $res['contact']['id'];
 
         // aggiungo l'associazione con l'account
-        $this->addContactToAccount($contactID, $accountID);
+        $this->addContactToAccount($contact_id, $account_id);
     }
     
     /**
@@ -524,20 +524,20 @@ class Contacts extends Resource
      *
      * @see https://developers.activecampaign.com/reference#account-contacts
      *
-     * @param int $contactID
-     * @param int $accountID
+     * @param int $contact_id
+     * @param int $account_id
      * @param string $jobTitle
      * @return string
      */
-    public function addContactToAccount(int $contactID, int $accountID, string $jobTitle = '')
+    public function addContactToAccount(int $contact_id, int $account_id, string $jobTitle = '')
     {
         $req = $this->client
             ->getClient()
             ->post('/api/3/accountContacts', [
                 'json' => [
                     'accountContact' => [
-                        'contact' => $contactID,
-                        'account' => $accountID,
+                        'contact' => $contact_id,
+                        'account' => $account_id,
                         'jobTitle' => $jobTitle,
                     ],
                 ],
