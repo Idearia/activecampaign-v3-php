@@ -17,6 +17,45 @@ class Contacts extends Resource
     // -----------------------------------------------------------
 
     /**
+     * Iscrive un contatto ad una lista
+     * 
+     * @param int $contact_id L'id su AC del contatto da iscrivere
+     * @param int $list_id L'id su AC della lista a cui iscriverlo
+     * @return string La risposta JSON
+     */
+    public function subscribe(int $contact_id, int $list_id): string
+    {
+        $req = $this->client
+            ->getClient()
+            ->post('/api/3/contactLists', [
+                'json' => [
+                    'contactList' => [
+                        'contact' => $contact_id,
+                        'list' => $list_id,
+                        'status' => 1,
+                    ],
+                ],
+            ]);
+
+        return $req->getBody()->getContents();
+    }
+
+    /**
+     * Rimuove l'associazione di un contatto ad una lista
+     * 
+     * @param int $contact_list_id L'id su AC dell'associazione contatto-lista
+     * @return bool Se si ottiene 200 OK come status code nella risposta
+     */
+    public function removeSubscription(int $contact_list_id): bool
+    {
+        $req = $this->client
+            ->getClient()
+            ->delete('/api/3/contactLists/' . $contact_list_id);
+
+        return $req->getStatusCode() === 200;
+    }
+
+    /**
      * List all contacts
      *
      * Li elenca tutti, iterando sulla paginazione
