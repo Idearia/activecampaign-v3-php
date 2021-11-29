@@ -312,22 +312,22 @@ class Contacts extends Resource
     }
 
     /**
-     * Add a tag to contact
+     * Aggiunge un tag al contatto
      *
      * @see https://developers.activecampaign.com/reference#create-contact-tag
      *
-     * @param int $id
-     * @param int $tag_id
-     * @return string
+     * @param int $contact_id L'id del contatto a cui si vuole aggiungere un tag
+     * @param int $tag_id L'id del tag che si vuole aggiungere al contatto
+     * @return string La risposta JSON
      */
-    public function tag(int $id, int $tag_id)
+    public function tag(int $contact_id, int $tag_id): string
     {
         $req = $this->client
             ->getClient()
             ->post('/api/3/contactTags', [
                 'json' => [
                     'contactTag' => [
-                        'contact' => $id,
+                        'contact' => $contact_id,
                         'tag' => $tag_id,
                     ],
                 ],
