@@ -5,13 +5,11 @@ namespace Mediatoolkit\ActiveCampaign;
 use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
-use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleLogMiddleware\LogMiddleware;
 use Exception;
-use Throwable;
 
 class Client
 {
@@ -276,7 +274,7 @@ class Client
     /**
      * delay 1s 2s 3s 4s 5s
      *
-     * @return Closure
+     * @return callable
      */
     public function retryDelay(float $retry_delay)
     {

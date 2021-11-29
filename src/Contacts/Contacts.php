@@ -36,7 +36,7 @@ class Contacts extends Resource
         $contacts = $res['contacts'] ?? [];
 
         if ($debug) {
-            dump('Scaricata pagina 1 / ' . $pages);
+            echo 'Scaricata pagina 1 / ' . $pages . PHP_EOL;
         }
 
         // Loop sulle pagine
@@ -52,7 +52,7 @@ class Contacts extends Resource
             $contacts = array_merge($contacts, $res['contacts']);
 
             if ($debug) {
-                dump('Scaricata pagina ' . ($page + 1) . ' / ' . $pages);
+                echo 'Scaricata pagina ' . ($page + 1) . ' / ' . $pages . PHP_EOL;
             }
         }
         
@@ -86,7 +86,7 @@ class Contacts extends Resource
         $contactLists = $res['contactLists'] ?? [];
 
         if ($debug) {
-            dump('Scaricata pagina 1 / ' . $pages);
+            echo 'Scaricata pagina 1 / ' . $pages . PHP_EOL;
         }
 
         // Loop sulle pagine
@@ -103,7 +103,7 @@ class Contacts extends Resource
             $contactLists = array_merge($contactLists, $res['contactLists']);
 
             if ($debug) {
-                dump('Scaricata pagina ' . ($page + 1) . ' / ' . $pages);
+                echo 'Scaricata pagina ' . ($page + 1) . ' / ' . $pages . PHP_EOL;
             }
         }
         

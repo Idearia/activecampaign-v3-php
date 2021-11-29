@@ -151,7 +151,7 @@ class Accounts extends Resource
         $accounts = $res['accounts'] ?? [];
 
         if ($debug) {
-            dump('Scaricata pagina 1 / ' . $pages);
+            echo 'Scaricata pagina 1 / ' . $pages . PHP_EOL;
         }
 
         // Loop sulle pagine
@@ -167,7 +167,7 @@ class Accounts extends Resource
             $accounts = array_merge($accounts, $res['accounts']);
             
             if ($debug) {
-                dump('Scaricata pagina ' . ($page + 1) . ' / ' . $pages);
+                echo 'Scaricata pagina ' . ($page + 1) . ' / ' . $pages . PHP_EOL;
             }
         }
 
@@ -202,7 +202,7 @@ class Accounts extends Resource
         $customFieldsMeta = $res['customerAccountCustomFieldMeta'] ?? [];
 
         if ($debug) {
-            dump('Scaricata pagina 1 / ' . $pages);
+            echo 'Scaricata pagina 1 / ' . $pages . PHP_EOL;
         }
 
         // Loop sulle pagine
@@ -220,7 +220,7 @@ class Accounts extends Resource
             $customFieldsMeta = array_merge($customFieldsMeta, $res['customerAccountCustomFieldMeta']);
 
             if ($debug) {
-                dump('Scaricata pagina ' . ($page + 1) . ' / ' . $pages);
+                echo 'Scaricata pagina ' . ($page + 1) . ' / ' . $pages . PHP_EOL;
             }
         }
 
