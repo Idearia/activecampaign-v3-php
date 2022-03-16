@@ -3,10 +3,10 @@
   "description": "PHP Wrapper for ActiveCampaign",
   "require": {
     "guzzlehttp/guzzle": "^7.0",
-    "gmponos/guzzle_logger": "^2.0"
+    "gmponos/guzzle_logger": "dev-master"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7"
+    "phpunit/phpunit": "^9.5"
   },
   "license": "MIT",
   "authors": [
