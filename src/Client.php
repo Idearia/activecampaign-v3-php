@@ -42,7 +42,7 @@ class Client
      * Event Tracking ACTID
      * Get yours from Settings > Tracking > Event Tracking > Event Tracking API
      *
-     * @var string
+     * @var string|null
      */
     protected $event_tracking_actid;
 
@@ -139,6 +139,7 @@ class Client
         if (is_null($this->event_tracking_actid)) {
             return null;
         }
+
         return $this->event_tracking_client;
     }
 
