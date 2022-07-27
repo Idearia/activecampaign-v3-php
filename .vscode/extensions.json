@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "bmewburn.vscode-intelephense-client",
+    "swordev.phpstan",
+    "esbenp.prettier-vscode"
+  ]
+}
