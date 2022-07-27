@@ -1,51 +1,18 @@
 # Active Campaign v3 PHP Wrapper
 
-Unofficial PHP Wrapper for ActiveCampaign API v3.
+## Installation
 
-## Installation:
-
-```
-composer require mediatoolkit/activecampaign-v3-php
+```bash
+composer require idearia/activecampaign-v3-php
 ```
 
-## Basic usage:
+## Local Development
 
-#### Create a client:
+To install the dependencies, run
 
-```
-$client = new Client(
-    $api_url,
-    $api_token,
-    $event_tracking_actid,
-    $event_tracking_key
-);
+```bash
+composer install
+npm i
 ```
 
-#### Select Contacts endpoint:
-
-```
-$contacts = new Contacts($client);
-```
-
-#### Create new contact:
-
-```
-$contact = $contacts->create([
-    'email' => 'CONTACT_EMAIL',
-    'firstName' => 'CONTACT_FIRST_NAME',
-    'lastName' => 'CONTACT_LAST_NAME'
-]);
-```
-
-## Available endpoints:
-
-- Contacts
-- Deals
-- Lists
-- Organizations
-- EventTracking
-- SiteTracking
-
-## ActiveCampaign Developer Documentation
-
-Official API docs: https://developers.activecampaign.com/reference
+NPM is required to format the code, since we use [a PHP Plugin for Prettier](https://github.com/prettier/plugin-php).
