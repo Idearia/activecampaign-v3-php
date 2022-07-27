@@ -324,7 +324,7 @@ class Contacts extends Resource
      * @see https://developers.activecampaign.com/reference#delete-contact
      *
      * @param int $id
-     * @return string
+     * @return bool
      */
     public function delete(int $id)
     {
