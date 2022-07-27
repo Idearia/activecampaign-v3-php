@@ -109,6 +109,12 @@ class EventTracking extends Resource
      */
     public function trackEvent($event_name, $event_data = null, $email = null)
     {
+        $client = $this->client->getEventTrackingClient();
+
+        if ($client === null) {
+            return '';
+        }
+
         $form_params = [
             'event' => $event_name,
         ];
@@ -125,10 +131,10 @@ class EventTracking extends Resource
 
         $form_params = array_merge(
             $form_params,
-            $this->client->getEventTrackingClient()->getConfig('form_params')
+            $client->getConfig('form_params')
         );
 
-        $req = $this->client->getEventTrackingClient()->post('', [
+        $req = $client->post('', [
             'form_params' => $form_params,
         ]);
 
