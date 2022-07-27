@@ -1,6 +1,3 @@
-.idea
-/vendor/
+/.vscode
+/vendor
 /tests/bootstrap.php
-/composer.lock
-.DS_Store
-.vscode
