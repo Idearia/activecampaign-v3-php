@@ -7,10 +7,8 @@
 
 namespace Mediatoolkit\ActiveCampaign;
 
-
 class Resource
 {
-
     /**
      * @var Client
      */
@@ -24,5 +22,4 @@ class Resource
     {
         $this->client = $client;
     }
-
 }

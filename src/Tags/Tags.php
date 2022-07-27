@@ -11,7 +11,6 @@ use Mediatoolkit\ActiveCampaign\Resource;
  */
 class Tags extends Resource
 {
-
     /**
      * List all tags
      * @see https://developers.activecampaign.com/reference#retrieve-all-tags
@@ -20,11 +19,9 @@ class Tags extends Resource
      */
     public function listAll(array $query_params = [])
     {
-        $req = $this->client
-            ->getClient()
-            ->get('/api/3/tags', [
-                'query' => $query_params
-            ]);
+        $req = $this->client->getClient()->get('/api/3/tags', [
+            'query' => $query_params,
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -36,18 +33,17 @@ class Tags extends Resource
      * @param string $tagDescription
      * @return string
      */
-    public function createTag(string $tagName, string $tagDescription = "") {
-        $req = $this->client
-            ->getClient()
-            ->post('/api/3/tags', [
-                'json' => [
-                    'tag' => [
-                        'tag' => $tagName,
-                        'tagType' => 'contact',
-                        'description' => $tagDescription
-                    ]
-                ]
-            ]);
+    public function createTag(string $tagName, string $tagDescription = '')
+    {
+        $req = $this->client->getClient()->post('/api/3/tags', [
+            'json' => [
+                'tag' => [
+                    'tag' => $tagName,
+                    'tagType' => 'contact',
+                    'description' => $tagDescription,
+                ],
+            ],
+        ]);
 
         return $req->getBody()->getContents();
     }

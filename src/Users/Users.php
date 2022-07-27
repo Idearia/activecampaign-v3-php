@@ -2,7 +2,6 @@
 
 namespace Mediatoolkit\ActiveCampaign\Users;
 
-
 use Mediatoolkit\ActiveCampaign\Resource;
 
 /**
@@ -12,7 +11,6 @@ use Mediatoolkit\ActiveCampaign\Resource;
  */
 class Users extends Resource
 {
-
     /**
      * Create a user
      * @see https://developers.activecampaign.com/reference#create-new-user
@@ -21,13 +19,11 @@ class Users extends Resource
      */
     public function create(array $user)
     {
-        $req = $this->client
-            ->getClient()
-            ->post('/api/3/users', [
-                'json' => [
-                    'user' => $user
-                ]
-            ]);
+        $req = $this->client->getClient()->post('/api/3/users', [
+            'json' => [
+                'user' => $user,
+            ],
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -45,11 +41,9 @@ class Users extends Resource
         if (!is_null($id)) {
             $uri .= '/' . $id;
         }
-        $req = $this->client
-            ->getClient()
-            ->get($uri,  [
-                'query' => $query_params
-            ]);
+        $req = $this->client->getClient()->get($uri, [
+            'query' => $query_params,
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -62,11 +56,8 @@ class Users extends Resource
      */
     public function delete($id)
     {
-        $req = $this->client
-            ->getClient()
-            ->delete('/api/3/users/' . $id);
+        $req = $this->client->getClient()->delete('/api/3/users/' . $id);
 
         return $req->getBody()->getContents();
     }
-
 }

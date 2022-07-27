@@ -2,7 +2,6 @@
 
 namespace Mediatoolkit\ActiveCampaign\Deals;
 
-
 use Mediatoolkit\ActiveCampaign\Resource;
 
 /**
@@ -12,7 +11,6 @@ use Mediatoolkit\ActiveCampaign\Resource;
  */
 class Deals extends Resource
 {
-
     /**
      * Create a deal
      * @see https://developers.activecampaign.com/reference#create-a-deal
@@ -22,13 +20,11 @@ class Deals extends Resource
      */
     public function create(array $deal)
     {
-        $req = $this->client
-            ->getClient()
-            ->post('/api/3/deals', [
-                'json' => [
-                    'deal' => $deal
-                ]
-            ]);
+        $req = $this->client->getClient()->post('/api/3/deals', [
+            'json' => [
+                'deal' => $deal,
+            ],
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -42,9 +38,7 @@ class Deals extends Resource
      */
     public function get(int $id)
     {
-        $req = $this->client
-            ->getClient()
-            ->get('/api/3/deals/' . $id);
+        $req = $this->client->getClient()->get('/api/3/deals/' . $id);
 
         return $req->getBody()->getContents();
     }
@@ -59,13 +53,11 @@ class Deals extends Resource
      */
     public function update(int $id, array $deal)
     {
-        $req = $this->client
-            ->getClient()
-            ->put('/api/3/deals/' . $id, [
-                'json' => [
-                    'deal' => $deal
-                ]
-            ]);
+        $req = $this->client->getClient()->put('/api/3/deals/' . $id, [
+            'json' => [
+                'deal' => $deal,
+            ],
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -79,9 +71,7 @@ class Deals extends Resource
      */
     public function delete(int $id)
     {
-        $req = $this->client
-            ->getClient()
-            ->delete('/api/3/deals/' . $id);
+        $req = $this->client->getClient()->delete('/api/3/deals/' . $id);
 
         return $req->getBody()->getContents();
     }
@@ -100,8 +90,8 @@ class Deals extends Resource
             ->getClient()
             ->put('/api/3/dealStages/' . $id . '/deals', [
                 'json' => [
-                    'deal' => $deal
-                ]
+                    'deal' => $deal,
+                ],
             ]);
 
         return $req->getBody()->getContents();
@@ -110,25 +100,26 @@ class Deals extends Resource
     /**
      * Create a deal custom field value
      * @see https://developers.activecampaign.com/v3/reference#create-dealcustomfielddata-resource
-     * 
+     *
      * @param int $deal_id
      * @param int $field_id
      * @param $field_value
      * @return string
      */
-    public function createCustomFieldValue(int $deal_id, int $field_id, $field_value)
-    {
-        $req = $this->client
-            ->getClient()
-            ->post('/api/3/dealCustomFieldData', [
-                'json' => [
-                    'dealCustomFieldDatum' => [
-                        'dealId' => $deal_id,
-                        'custom_field_id' => $field_id,
-                        'fieldValue' => $field_value
-                    ]
-                ]
-            ]);
+    public function createCustomFieldValue(
+        int $deal_id,
+        int $field_id,
+        $field_value
+    ) {
+        $req = $this->client->getClient()->post('/api/3/dealCustomFieldData', [
+            'json' => [
+                'dealCustomFieldDatum' => [
+                    'dealId' => $deal_id,
+                    'custom_field_id' => $field_id,
+                    'fieldValue' => $field_value,
+                ],
+            ],
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -163,9 +154,9 @@ class Deals extends Resource
             ->put('/api/3/dealCustomFieldData/' . $custom_field_id, [
                 'json' => [
                     'dealCustomFieldDatum' => [
-                        'fieldValue' => $field_value
-                    ]
-                ]
+                        'fieldValue' => $field_value,
+                    ],
+                ],
             ]);
 
         return $req->getBody()->getContents();
@@ -195,11 +186,9 @@ class Deals extends Resource
      */
     public function listAllCustomFields(array $query_params = [])
     {
-        $req = $this->client
-            ->getClient()
-            ->get('/api/3/dealCustomFieldMeta', [
-                'query' => $query_params
-            ]);
+        $req = $this->client->getClient()->get('/api/3/dealCustomFieldMeta', [
+            'query' => $query_params,
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -212,11 +201,9 @@ class Deals extends Resource
      */
     public function listAllCustomFieldValues(array $query_params)
     {
-        $req = $this->client
-            ->getClient()
-            ->get('/api/3/dealCustomFieldData', [
-                'query' => $query_params
-            ]);
+        $req = $this->client->getClient()->get('/api/3/dealCustomFieldData', [
+            'query' => $query_params,
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -229,11 +216,9 @@ class Deals extends Resource
      */
     public function listAllPipelines(array $query_params = [])
     {
-        $req = $this->client
-            ->getClient()
-            ->get('/api/3/dealGroups', [
-                'query' => $query_params
-            ]);
+        $req = $this->client->getClient()->get('/api/3/dealGroups', [
+            'query' => $query_params,
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -246,13 +231,10 @@ class Deals extends Resource
      */
     public function listAllStages(array $query_params = [])
     {
-        $req = $this->client
-            ->getClient()
-            ->get('/api/3/dealStages', [
-                'query' => $query_params
-            ]);
+        $req = $this->client->getClient()->get('/api/3/dealStages', [
+            'query' => $query_params,
+        ]);
 
         return $req->getBody()->getContents();
     }
-
 }

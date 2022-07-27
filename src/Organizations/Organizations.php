@@ -11,7 +11,6 @@ use Mediatoolkit\ActiveCampaign\Resource;
  */
 class Organizations extends Resource
 {
-
     /**
      * Create an organization
      * @see https://developers.activecampaign.com/reference#create-organization
@@ -21,13 +20,11 @@ class Organizations extends Resource
      */
     public function create(array $organization)
     {
-        $req = $this->client
-            ->getClient()
-            ->post('/api/3/organizations', [
-                'json' => [
-                    'organization' => $organization
-                ]
-            ]);
+        $req = $this->client->getClient()->post('/api/3/organizations', [
+            'json' => [
+                'organization' => $organization,
+            ],
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -41,9 +38,7 @@ class Organizations extends Resource
      */
     public function get(int $id)
     {
-        $req = $this->client
-            ->getClient()
-            ->get('/api/3/organizations/' . $id);
+        $req = $this->client->getClient()->get('/api/3/organizations/' . $id);
 
         return $req->getBody()->getContents();
     }
@@ -58,13 +53,11 @@ class Organizations extends Resource
      */
     public function update(int $id, array $organization)
     {
-        $req = $this->client
-            ->getClient()
-            ->put('/api/3/organizations/' . $id, [
-                'json' => [
-                    'organization' => $organization
-                ]
-            ]);
+        $req = $this->client->getClient()->put('/api/3/organizations/' . $id, [
+            'json' => [
+                'organization' => $organization,
+            ],
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -98,8 +91,8 @@ class Organizations extends Resource
             ->getClient()
             ->delete('/api/3/organizations/bulk_delete', [
                 'query' => [
-                    'ids' => $ids
-                ]
+                    'ids' => $ids,
+                ],
             ]);
 
         return $req->getBody()->getContents();
@@ -109,17 +102,13 @@ class Organizations extends Resource
     {
         $query_params = array_merge($query_params, [
             'limit' => $limit,
-            'offset' => $offset
+            'offset' => $offset,
         ]);
 
-        $req = $this->client
-            ->getClient()
-            ->get('/api/3/organizations', [
-                'query' => $query_params
-            ]);
+        $req = $this->client->getClient()->get('/api/3/organizations', [
+            'query' => $query_params,
+        ]);
 
         return $req->getBody()->getContents();
     }
-
-
 }

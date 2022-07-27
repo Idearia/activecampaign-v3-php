@@ -13,7 +13,6 @@ use Exception;
 
 class Client
 {
-
     public const HEADER_AUTH_KEY = 'Api-Token';
 
     public const LIB_USER_AGENT = 'activecampaign-v3-php/1.0';
@@ -84,8 +83,12 @@ class Client
     /** @var \GuzzleHttp\Client */
     private $event_tracking_client;
 
-    public function __construct($api_url, $api_token, $event_tracking_actid = null, $event_tracking_key = null)
-    {
+    public function __construct(
+        $api_url,
+        $api_token,
+        $event_tracking_actid = null,
+        $event_tracking_key = null
+    ) {
         $this->api_url = $api_url;
         $this->api_token = $api_token;
         $this->event_tracking_actid = $event_tracking_actid;
@@ -97,11 +100,14 @@ class Client
                 self::HEADER_AUTH_KEY => $this->api_token,
                 'Accept' => 'application/json',
             ],
-            'handler' => HandlerStack::create(new CurlHandler),
+            'handler' => HandlerStack::create(new CurlHandler()),
         ];
 
         // Client per l'event tracking
-        if (! is_null($this->event_tracking_actid) && ! is_null($this->event_tracking_key)) {
+        if (
+            !is_null($this->event_tracking_actid) &&
+            !is_null($this->event_tracking_key)
+        ) {
             $this->event_tracking_client = new \GuzzleHttp\Client([
                 'base_uri' => self::EVENT_TRACKING_URL,
                 'headers' => [
@@ -182,10 +188,12 @@ class Client
      */
     public function withRetry(int $retry_times = 10, float $retry_delay = 0.5)
     {
-        return $this->withMiddleware(Middleware::retry(
-            $this->retryDecider($retry_times),
-            $this->retryDelay($retry_delay)
-        ));
+        return $this->withMiddleware(
+            Middleware::retry(
+                $this->retryDecider($retry_times),
+                $this->retryDelay($retry_delay)
+            )
+        );
     }
 
     /**
@@ -255,7 +263,7 @@ class Client
 
             if ($response) {
                 $code = $response->getStatusCode();
-                
+
                 // Riprova la richiesta se c'è un errore da parte del server
                 if ($code >= 500) {
                     return true;

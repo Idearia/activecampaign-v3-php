@@ -12,7 +12,6 @@ use Mediatoolkit\ActiveCampaign\Resource;
  */
 class Accounts extends Resource
 {
-
     /**
      * Create an account
      *
@@ -23,13 +22,11 @@ class Accounts extends Resource
      */
     public function create(array $account)
     {
-        $req = $this->client
-            ->getClient()
-            ->post('/api/3/accounts', [
-                'json' => [
-                    'account' => $account,
-                ],
-            ]);
+        $req = $this->client->getClient()->post('/api/3/accounts', [
+            'json' => [
+                'account' => $account,
+            ],
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -45,13 +42,11 @@ class Accounts extends Resource
      */
     public function update(int $id, array $account)
     {
-        $req = $this->client
-            ->getClient()
-            ->put('/api/3/accounts/' . $id, [
-                'json' => [
-                    'account' => $account,
-                ],
-            ]);
+        $req = $this->client->getClient()->put('/api/3/accounts/' . $id, [
+            'json' => [
+                'account' => $account,
+            ],
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -66,9 +61,7 @@ class Accounts extends Resource
      */
     public function delete(int $id)
     {
-        $req = $this->client
-            ->getClient()
-            ->delete('/api/3/accounts/' . $id);
+        $req = $this->client->getClient()->delete('/api/3/accounts/' . $id);
 
         return $req->getBody()->getContents();
     }
@@ -83,9 +76,7 @@ class Accounts extends Resource
      */
     public function get(int $id)
     {
-        $req = $this->client
-            ->getClient()
-            ->get('/api/3/accounts/' . $id);
+        $req = $this->client->getClient()->get('/api/3/accounts/' . $id);
 
         return $req->getBody()->getContents();
     }
@@ -107,11 +98,9 @@ class Accounts extends Resource
             'offset' => $offset,
         ]);
 
-        $req = $this->client
-            ->getClient()
-            ->get('/api/3/accounts', [
-                'query' => $query_params,
-            ]);
+        $req = $this->client->getClient()->get('/api/3/accounts', [
+            'query' => $query_params,
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -124,20 +113,25 @@ class Accounts extends Resource
         $req = $this->client
             ->getClient()
             ->get("/api/3/accounts/$account_id/accountCustomFieldData");
-        
-        $json_response = $req->getBody()->getContents();
-        
-        return json_decode($json_response, true)['customerAccountCustomFieldData'];
-    }
 
+        $json_response = $req->getBody()->getContents();
+
+        return json_decode(
+            $json_response,
+            true
+        )['customerAccountCustomFieldData'];
+    }
 
     /**
      * List all accounts
      *
      * Li elenca tutti, iterando sulla paginazione
      */
-    public function listAllLoop(array $query_params = [], int $accounts_per_page = 100, $debug = false): array
-    {
+    public function listAllLoop(
+        array $query_params = [],
+        int $accounts_per_page = 100,
+        $debug = false
+    ): array {
         // Risposta JSON dal server
         $res = $this->listAll($query_params, $accounts_per_page);
 
@@ -147,7 +141,7 @@ class Accounts extends Resource
         // Calcolo le pagine, i.e. numero di richieste che devo fare in totale
         $total = (int) $res['meta']['total'];
         $pages = (int) ceil($total / $accounts_per_page);
-        
+
         $accounts = $res['accounts'] ?? [];
 
         if ($debug) {
@@ -162,12 +156,16 @@ class Accounts extends Resource
                 $page * $accounts_per_page
             );
             $res = json_decode($res, true);
-            
+
             // aggiungo i risultati
             $accounts = array_merge($accounts, $res['accounts']);
-            
+
             if ($debug) {
-                echo 'Scaricata pagina ' . ($page + 1) . ' / ' . $pages . PHP_EOL;
+                echo 'Scaricata pagina ' .
+                    ($page + 1) .
+                    ' / ' .
+                    $pages .
+                    PHP_EOL;
             }
         }
 
@@ -179,11 +177,14 @@ class Accounts extends Resource
      *
      * Li elenca tutti, iterando sulla paginazione, e aggiunge pure i custom fields
      */
-    public function listAllWithCustomFields($debug = false, int $accounts_per_page = 100): array
-    {
+    public function listAllWithCustomFields(
+        $debug = false,
+        int $accounts_per_page = 100
+    ): array {
         // aggiungo ai parametri della query i contactLists
         $query_params = [
-            'include' => 'accountCustomFieldData.customerAccountCustomFieldMetum',
+            'include' =>
+                'accountCustomFieldData.customerAccountCustomFieldMetum',
         ];
 
         // Risposta JSON dal server
@@ -195,7 +196,7 @@ class Accounts extends Resource
         // Calcolo le pagine, i.e. numero di richieste che devo fare in totale
         $total = (int) $res['meta']['total'];
         $pages = (int) ceil($total / $accounts_per_page);
-        
+
         // Estraggo le informazioni su account e custom fields
         $accounts = $res['accounts'] ?? [];
         $customFields = $res['customerAccountCustomFieldData'] ?? [];
@@ -216,11 +217,21 @@ class Accounts extends Resource
 
             // aggiungo i risultati
             $accounts = array_merge($accounts, $res['accounts']);
-            $customFields = array_merge($customFields, $res['customerAccountCustomFieldData']);
-            $customFieldsMeta = array_merge($customFieldsMeta, $res['customerAccountCustomFieldMeta']);
+            $customFields = array_merge(
+                $customFields,
+                $res['customerAccountCustomFieldData']
+            );
+            $customFieldsMeta = array_merge(
+                $customFieldsMeta,
+                $res['customerAccountCustomFieldMeta']
+            );
 
             if ($debug) {
-                echo 'Scaricata pagina ' . ($page + 1) . ' / ' . $pages . PHP_EOL;
+                echo 'Scaricata pagina ' .
+                    ($page + 1) .
+                    ' / ' .
+                    $pages .
+                    PHP_EOL;
             }
         }
 

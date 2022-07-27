@@ -11,7 +11,6 @@ use Mediatoolkit\ActiveCampaign\Resource;
  */
 class EventTracking extends Resource
 {
-
     /**
      * Retrieve status
      * @see https://developers.activecampaign.com/reference#retrieve-event-tracking-status
@@ -19,9 +18,7 @@ class EventTracking extends Resource
      */
     public function retrieveStatus()
     {
-        $req = $this->client
-            ->getClient()
-            ->get('api/3/eventTracking');
+        $req = $this->client->getClient()->get('api/3/eventTracking');
 
         return $req->getBody()->getContents();
     }
@@ -34,15 +31,13 @@ class EventTracking extends Resource
      */
     public function createEvent(string $event_name)
     {
-        $req = $this->client
-            ->getClient()
-            ->post('/api/3/eventTrackingEvents', [
-                'json' => [
-                    'eventTrackingEvent' => [
-                        'name' => $event_name
-                    ]
-                ]
-            ]);
+        $req = $this->client->getClient()->post('/api/3/eventTrackingEvents', [
+            'json' => [
+                'eventTrackingEvent' => [
+                    'name' => $event_name,
+                ],
+            ],
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -72,11 +67,9 @@ class EventTracking extends Resource
      */
     public function listAllEvents(array $query_params = [])
     {
-        $req = $this->client
-            ->getClient()
-            ->get('api/3/eventTrackingEvents', [
-                'query' => $query_params
-            ]);
+        $req = $this->client->getClient()->get('api/3/eventTrackingEvents', [
+            'query' => $query_params,
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -90,15 +83,13 @@ class EventTracking extends Resource
      */
     public function toggleEventTracking(bool $enabled)
     {
-        $req = $this->client
-            ->getClient()
-            ->put('/api/3/eventTracking/', [
-                'json' => [
-                    'eventTracking' => [
-                        'enabled' => $enabled
-                    ]
-                ]
-            ]);
+        $req = $this->client->getClient()->put('/api/3/eventTracking/', [
+            'json' => [
+                'eventTracking' => [
+                    'enabled' => $enabled,
+                ],
+            ],
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -109,10 +100,13 @@ class EventTracking extends Resource
      * @param null $email
      * @return string
      */
-    public function trackEvent(string $event_name, $event_data = null, $email = null)
-    {
+    public function trackEvent(
+        string $event_name,
+        $event_data = null,
+        $email = null
+    ) {
         $form_params = [
-            'event' => $event_name
+            'event' => $event_name,
         ];
 
         if (!is_null($event_data)) {
@@ -121,7 +115,7 @@ class EventTracking extends Resource
 
         if (!is_null($email)) {
             $form_params['visit'] = json_encode([
-                'email' => $email
+                'email' => $email,
             ]);
         }
 
@@ -130,13 +124,10 @@ class EventTracking extends Resource
             $this->client->getEventTrackingClient()->getConfig('form_params')
         );
 
-        $req = $this->client
-            ->getEventTrackingClient()
-            ->post('', [
-                'form_params' => $form_params
-            ]);
+        $req = $this->client->getEventTrackingClient()->post('', [
+            'form_params' => $form_params,
+        ]);
 
         return $req->getBody()->getContents();
     }
-
 }

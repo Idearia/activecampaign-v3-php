@@ -7,13 +7,11 @@
 
 namespace Mediatoolkit\Tests\Organizations;
 
-
 use Mediatoolkit\ActiveCampaign\Organizations\Organizations;
 use Mediatoolkit\Tests\ResourceTestCase;
 
 class OrganizationsTest extends ResourceTestCase
 {
-
     protected static $name;
 
     public static function setUpBeforeClass()
@@ -33,11 +31,10 @@ class OrganizationsTest extends ResourceTestCase
         $organizations = new Organizations($this->client);
 
         $create = $organizations->create([
-            'name' => self::$name
+            'name' => self::$name,
         ]);
 
         $org = json_decode($create, true);
         $this->assertCount(1, $org);
     }
-
 }

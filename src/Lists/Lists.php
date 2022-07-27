@@ -2,7 +2,6 @@
 
 namespace Mediatoolkit\ActiveCampaign\Lists;
 
-
 use Mediatoolkit\ActiveCampaign\Resource;
 
 /**
@@ -12,7 +11,6 @@ use Mediatoolkit\ActiveCampaign\Resource;
  */
 class Lists extends Resource
 {
-
     /**
      * Create a list
      * @see https://developers.activecampaign.com/reference#create-new-list
@@ -21,13 +19,11 @@ class Lists extends Resource
      */
     public function create(array $list)
     {
-        $req = $this->client
-            ->getClient()
-            ->post('/api/3/lists', [
-                'json' => [
-                    'list' => $list
-                ]
-            ]);
+        $req = $this->client->getClient()->post('/api/3/lists', [
+            'json' => [
+                'list' => $list,
+            ],
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -45,11 +41,9 @@ class Lists extends Resource
         if (!is_null($id)) {
             $uri .= '/' . $id;
         }
-        $req = $this->client
-            ->getClient()
-            ->get($uri,  [
-                'query' => $query_params
-            ]);
+        $req = $this->client->getClient()->get($uri, [
+            'query' => $query_params,
+        ]);
 
         return $req->getBody()->getContents();
     }
@@ -62,11 +56,8 @@ class Lists extends Resource
      */
     public function delete($id)
     {
-        $req = $this->client
-            ->getClient()
-            ->delete('/api/3/lists/' . $id);
+        $req = $this->client->getClient()->delete('/api/3/lists/' . $id);
 
         return $req->getBody()->getContents();
     }
-
 }

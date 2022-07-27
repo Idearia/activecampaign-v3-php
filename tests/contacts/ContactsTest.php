@@ -7,7 +7,6 @@ use Mediatoolkit\Tests\ResourceTestCase;
 
 class ContactsTest extends ResourceTestCase
 {
-
     private static $email;
     private static $firstName;
     private static $lastName;
@@ -34,7 +33,7 @@ class ContactsTest extends ResourceTestCase
         $create = $contacts->create([
             'email' => self::$email,
             'firstName' => self::$firstName,
-            'lastName' => self::$lastName
+            'lastName' => self::$lastName,
         ]);
 
         $createdContact = json_decode($create, true);
@@ -45,15 +44,19 @@ class ContactsTest extends ResourceTestCase
         $this->assertEquals(self::$email, $getContact['contact']['email']);
 
         $listNotExisting = $contacts->listAll([
-            'email' => 'nonexistinguser@mail.tests'
+            'email' => 'nonexistinguser@mail.tests',
         ]);
 
         $listNotExisting = json_decode($listNotExisting, true);
         $this->assertCount(0, $listNotExisting['contacts']);
 
-        $limitWorking = $contacts->listAll([
-            'email' => self::$email
-        ], 23, 5);
+        $limitWorking = $contacts->listAll(
+            [
+                'email' => self::$email,
+            ],
+            23,
+            5
+        );
 
         $limitWorking = json_decode($limitWorking, true);
         $this->assertCount(0, $limitWorking['contacts']);
@@ -61,5 +64,4 @@ class ContactsTest extends ResourceTestCase
         $deleteContact = $contacts->delete($createdContact['contact']['id']);
         $this->assertEquals(true, $deleteContact);
     }
-
 }

@@ -11,7 +11,6 @@ use Mediatoolkit\ActiveCampaign\Resource;
  */
 class SiteTracking extends Resource
 {
-
     /**
      * Get site tracking status (enabled or disabled)
      * @see https://developers.activecampaign.com/reference#retrieve-site-tracking-status
@@ -20,13 +19,10 @@ class SiteTracking extends Resource
      */
     public function retrieveStatus(array $query_params = [])
     {
-        $req = $this->client
-            ->getClient()
-            ->get('api/3/siteTracking', [
-                'query' => $query_params
-            ]);
+        $req = $this->client->getClient()->get('api/3/siteTracking', [
+            'query' => $query_params,
+        ]);
 
         return $req->getBody()->getContents();
     }
-
 }
