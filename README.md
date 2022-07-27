@@ -16,3 +16,7 @@ npm i
 ```
 
 NPM is required to format the code, since we use [a PHP Plugin for Prettier](https://github.com/prettier/plugin-php).
+
+### Static Analysis
+
+We use [PHPStan](https://github.com/phpstan/phpstan) for static analysis.

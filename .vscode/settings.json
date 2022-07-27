@@ -1,5 +1,21 @@
 {
   "[php]": {
     "editor.defaultFormatter": "karye.prettier-php"
+  },
+  "intelephense.diagnostics.undefinedVariables": false,
+  "intelephense.diagnostics.undefinedTypes": false,
+  "intelephense.diagnostics.undefinedSymbols": false,
+  "intelephense.diagnostics.undefinedProperties": false,
+  "intelephense.diagnostics.undefinedFunctions": false,
+  "intelephense.diagnostics.undefinedConstants": false,
+  "intelephense.diagnostics.undefinedClassConstants": false,
+  "intelephense.diagnostics.typeErrors": false,
+  "intelephense.diagnostics.embeddedLanguages": false,
+  "intelephense.diagnostics.duplicateSymbols": false,
+  "intelephense.diagnostics.deprecated": false,
+  "intelephense.diagnostics.argumentCount": false,
+  "intelephense.diagnostics.undefinedMethods": false,
+  "files.associations": {
+    "phpstan.neon": "yaml"
   }
 }
