@@ -167,9 +167,10 @@ class Client
     }
 
     /**
-     * Attiva la modalità retry del client
+     * Applica un middleware al client
      *
      * @see https://github.com/guzzle/guzzle/issues/1806#issuecomment-293931737
+     *
      * @return $this
      */
     public function withMiddleware($middleware)
@@ -185,6 +186,7 @@ class Client
      * Attiva la modalità retry del client
      *
      * @see https://github.com/guzzle/guzzle/issues/1806#issuecomment-293931737
+     *
      * @return $this
      */
     public function withRetry(int $retry_times = 10, float $retry_delay = 0.5)
@@ -201,12 +203,8 @@ class Client
      * Attiva la modalità di logging del client,
      * per loggare tutte le richieste e risposte
      *
-     * TODO: filepath: storage_path('logs' . DIRECTORY_SEPARATOR . 'guzzle-' . date('Y-m-d') . '.log');
-     * TODO: valutiamo se creare la nostra strategia di logging
-     *
      * @see https://github.com/gmponos/guzzle-log-middleware#handlers
      *
-     * @see https://github.com/gmponos/guzzle-log-middleware
      * @return $this
      */
     public function withLog($logger)
