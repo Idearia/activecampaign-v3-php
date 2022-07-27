@@ -1,0 +1,15 @@
+{
+  "endOfLine": "lf",
+  "tabWidth": 2,
+  "singleQuote": false,
+  "semi": false,
+  "overrides": [
+      {
+          "files": "**/*.php",
+          "options": {
+              "singleQuote": true,
+              "tabWidth": 4
+          }
+      }
+  ]
+}
