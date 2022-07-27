@@ -6,6 +6,7 @@ use Mediatoolkit\ActiveCampaign\Resource;
 
 /**
  * Class Deals
+ *
  * @package Mediatoolkit\ActiveCampaign\Deals
  * @see https://developers.activecampaign.com/reference#deal
  */
@@ -13,12 +14,13 @@ class Deals extends Resource
 {
     /**
      * Create a deal
+     *
      * @see https://developers.activecampaign.com/reference#create-a-deal
      *
      * @param array $deal
      * @return string
      */
-    public function create(array $deal)
+    public function create($deal)
     {
         $req = $this->client->getClient()->post('/api/3/deals', [
             'json' => [
@@ -31,12 +33,13 @@ class Deals extends Resource
 
     /**
      * Get a deal by id
+     *
      * @see https://developers.activecampaign.com/reference#retrieve-a-deal
      *
      * @param int $id
      * @return string
      */
-    public function get(int $id)
+    public function get($id)
     {
         $req = $this->client->getClient()->get('/api/3/deals/' . $id);
 
@@ -45,13 +48,14 @@ class Deals extends Resource
 
     /**
      * Update a deal
+     *
      * @see https://developers.activecampaign.com/reference#update-a-deal
      *
      * @param int $id
      * @param array $deal
      * @return string
      */
-    public function update(int $id, array $deal)
+    public function update($id, $deal)
     {
         $req = $this->client->getClient()->put('/api/3/deals/' . $id, [
             'json' => [
@@ -64,12 +68,13 @@ class Deals extends Resource
 
     /**
      * Delete a deal by id
+     *
      * @see https://developers.activecampaign.com/reference#delete-a-deal
      *
      * @param int $id
      * @return string
      */
-    public function delete(int $id)
+    public function delete($id)
     {
         $req = $this->client->getClient()->delete('/api/3/deals/' . $id);
 
@@ -78,13 +83,14 @@ class Deals extends Resource
 
     /**
      * Move deals to another stage
+     *
      * @see https://developers.activecampaign.com/reference#move-deals-to-another-deal-stage
      *
      * @param int $id
      * @param array $deal
      * @return string
      */
-    public function moveToStage(int $id, array $deal)
+    public function moveToStage($id, $deal)
     {
         $req = $this->client
             ->getClient()
@@ -99,18 +105,16 @@ class Deals extends Resource
 
     /**
      * Create a deal custom field value
+     *
      * @see https://developers.activecampaign.com/v3/reference#create-dealcustomfielddata-resource
      *
      * @param int $deal_id
      * @param int $field_id
-     * @param $field_value
+     * @param mixed $field_value
      * @return string
      */
-    public function createCustomFieldValue(
-        int $deal_id,
-        int $field_id,
-        $field_value
-    ) {
+    public function createCustomFieldValue($deal_id, $field_id, $field_value)
+    {
         $req = $this->client->getClient()->post('/api/3/dealCustomFieldData', [
             'json' => [
                 'dealCustomFieldDatum' => [
@@ -126,11 +130,13 @@ class Deals extends Resource
 
     /**
      * Retrieve a custom field value
+     *
      * @see https://developers.activecampaign.com/v3/reference#retrieve-a-dealcustomfielddata
+     *
      * @param int $custom_field_id
      * @return string
      */
-    public function retrieveCustomFieldValue(int $custom_field_id)
+    public function retrieveCustomFieldValue($custom_field_id)
     {
         $req = $this->client
             ->getClient()
@@ -141,13 +147,14 @@ class Deals extends Resource
 
     /**
      * Update a custom field value
+     *
      * @see https://developers.activecampaign.com/v3/reference#update-a-dealcustomfielddata-resource
      *
      * @param int $custom_field_id
-     * @param $field_value
+     * @param mixed $field_value
      * @return string
      */
-    public function updateCustomFieldValue(int $custom_field_id, $field_value)
+    public function updateCustomFieldValue($custom_field_id, $field_value)
     {
         $req = $this->client
             ->getClient()
@@ -164,12 +171,13 @@ class Deals extends Resource
 
     /**
      * Delete a custom field value
+     *
      * @see https://developers.activecampaign.com/v3/reference#retrieve-a-dealcustomfielddata-resource
      *
      * @param int $custom_field_id
      * @return string
      */
-    public function deleteCustomFieldValue(int $custom_field_id)
+    public function deleteCustomFieldValue($custom_field_id)
     {
         $req = $this->client
             ->getClient()
@@ -180,7 +188,9 @@ class Deals extends Resource
 
     /**
      * List all custom fields
+     *
      * @see https://developers.activecampaign.com/reference#retrieve-all-dealcustomfielddata-resources
+     *
      * @param array $query_params
      * @return string
      */
@@ -195,11 +205,13 @@ class Deals extends Resource
 
     /**
      * List all custom field values
+     *
      * @see https://developers.activecampaign.com/reference#list-all-custom-field-values
+     *
      * @param array $query_params
      * @return string
      */
-    public function listAllCustomFieldValues(array $query_params)
+    public function listAllCustomFieldValues($query_params)
     {
         $req = $this->client->getClient()->get('/api/3/dealCustomFieldData', [
             'query' => $query_params,
@@ -210,11 +222,13 @@ class Deals extends Resource
 
     /**
      * List all pipelines
+     *
      * @see https://developers.activecampaign.com/reference#list-all-pipelines
+     *
      * @param array $query_params
      * @return string
      */
-    public function listAllPipelines(array $query_params = [])
+    public function listAllPipelines($query_params = [])
     {
         $req = $this->client->getClient()->get('/api/3/dealGroups', [
             'query' => $query_params,
@@ -225,11 +239,13 @@ class Deals extends Resource
 
     /**
      * List all stages
+     *
      * @see https://developers.activecampaign.com/reference#list-all-deal-stages
+     *
      * @param array $query_params
      * @return string
      */
-    public function listAllStages(array $query_params = [])
+    public function listAllStages($query_params = [])
     {
         $req = $this->client->getClient()->get('/api/3/dealStages', [
             'query' => $query_params,

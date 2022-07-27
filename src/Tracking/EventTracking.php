@@ -6,6 +6,7 @@ use Mediatoolkit\ActiveCampaign\Resource;
 
 /**
  * Class EventTracking
+ *
  * @package Mediatoolkit\ActiveCampaign\Tracking
  * @see https://developers.activecampaign.com/reference#event-tracking
  */
@@ -13,6 +14,7 @@ class EventTracking extends Resource
 {
     /**
      * Retrieve status
+     *
      * @see https://developers.activecampaign.com/reference#retrieve-event-tracking-status
      * @return string
      */
@@ -25,11 +27,13 @@ class EventTracking extends Resource
 
     /**
      * Create a new event
+     *
      * @see https://developers.activecampaign.com/v3/reference#create-a-new-event-name-only
+     *
      * @param string $event_name
      * @return string
      */
-    public function createEvent(string $event_name)
+    public function createEvent($event_name)
     {
         $req = $this->client->getClient()->post('/api/3/eventTrackingEvents', [
             'json' => [
@@ -44,12 +48,13 @@ class EventTracking extends Resource
 
     /**
      * Delete event
+     *
      * @see https://developers.activecampaign.com/v3/reference#remove-event-name-only
      *
      * @param string $event_name
      * @return bool
      */
-    public function deleteEvent(string $event_name)
+    public function deleteEvent($event_name)
     {
         $req = $this->client
             ->getClient()
@@ -60,12 +65,13 @@ class EventTracking extends Resource
 
     /**
      * List all events
+     *
      * @see https://developers.activecampaign.com/v3/reference#list-all-event-types
      *
      * @param array $query_params
      * @return string
      */
-    public function listAllEvents(array $query_params = [])
+    public function listAllEvents($query_params = [])
     {
         $req = $this->client->getClient()->get('api/3/eventTrackingEvents', [
             'query' => $query_params,
@@ -76,12 +82,13 @@ class EventTracking extends Resource
 
     /**
      * Enable/Disable event tracking
+     *
      * @see https://developers.activecampaign.com/v3/reference#enable-disable-event-tracking
      *
      * @param bool $enabled
      * @return string
      */
-    public function toggleEventTracking(bool $enabled)
+    public function toggleEventTracking($enabled)
     {
         $req = $this->client->getClient()->put('/api/3/eventTracking/', [
             'json' => [
@@ -100,11 +107,8 @@ class EventTracking extends Resource
      * @param null $email
      * @return string
      */
-    public function trackEvent(
-        string $event_name,
-        $event_data = null,
-        $email = null
-    ) {
+    public function trackEvent($event_name, $event_data = null, $email = null)
+    {
         $form_params = [
             'event' => $event_name,
         ];

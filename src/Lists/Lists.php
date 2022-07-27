@@ -6,6 +6,7 @@ use Mediatoolkit\ActiveCampaign\Resource;
 
 /**
  * Class Lists
+ *
  * @package Mediatoolkit\ActiveCampaign\Lists
  * @see https://developers.activecampaign.com/reference#lists
  */
@@ -13,11 +14,13 @@ class Lists extends Resource
 {
     /**
      * Create a list
+     *
      * @see https://developers.activecampaign.com/reference#create-new-list
+     *
      * @param array $list
      * @return string
      */
-    public function create(array $list)
+    public function create($list)
     {
         $req = $this->client->getClient()->post('/api/3/lists', [
             'json' => [
@@ -30,12 +33,14 @@ class Lists extends Resource
 
     /**
      * Retrieve all lists or a list when id is not null
+     *
      * @see https://developers.activecampaign.com/reference#retrieve-a-list
+     *
      * @param null $id
      * @param array $query_params
      * @return string
      */
-    public function retrieve($id = null, array $query_params = [])
+    public function retrieve($id = null, $query_params = [])
     {
         $uri = '/api/3/lists';
         if (!is_null($id)) {
@@ -50,8 +55,10 @@ class Lists extends Resource
 
     /**
      * Delete a list
+     *
      * @see https://developers.activecampaign.com/reference#delete-a-list
-     * @param $id
+     *
+     * @param int $id
      * @return string
      */
     public function delete($id)

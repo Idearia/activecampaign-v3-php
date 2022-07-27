@@ -12,10 +12,6 @@ use Mediatoolkit\ActiveCampaign\Resource;
  */
 class Contacts extends Resource
 {
-    // -----------------------------------------------------------
-    // CODICE NOSTRO
-    // -----------------------------------------------------------
-
     /**
      * Iscrive un contatto ad una lista
      *
@@ -23,7 +19,7 @@ class Contacts extends Resource
      * @param int $list_id L'id su AC della lista a cui iscriverlo
      * @return string La risposta JSON
      */
-    public function subscribe(int $contact_id, int $list_id): string
+    public function subscribe($contact_id, $list_id)
     {
         $req = $this->client->getClient()->post('/api/3/contactLists', [
             'json' => [
@@ -44,7 +40,7 @@ class Contacts extends Resource
      * @param int $contact_list_id L'id su AC dell'associazione contatto-lista
      * @return bool Se si ottiene 200 OK come status code nella risposta
      */
-    public function removeSubscription(int $contact_list_id): bool
+    public function removeSubscription($contact_list_id)
     {
         $req = $this->client
             ->getClient()
@@ -54,15 +50,18 @@ class Contacts extends Resource
     }
 
     /**
-     * List all contacts
+     * Elenca tutti i contatti, iterando sulla paginazione
      *
-     * Li elenca tutti, iterando sulla paginazione
+     * @param array $query_params
+     * @param int $contacts_per_page
+     * @param bool $debug
+     * @return array
      */
     public function listAllLoop(
-        array $query_params = [],
-        int $contacts_per_page = 100,
+        $query_params = [],
+        $contacts_per_page = 100,
         $debug = false
-    ): array {
+    ) {
         // Risposta JSON dal server
         $res = $this->listAll($query_params, $contacts_per_page);
 
@@ -104,14 +103,17 @@ class Contacts extends Resource
     }
 
     /**
-     * List all contacts
+     * Elenca tutti i contatti, iterando sulla paginazione
+     * e aggiunge pure i contactLists
      *
-     * Li elenca tutti, iterando sulla paginazione, e aggiunge pure i contactLists
+     * @param bool $debug
+     * @param int $contacts_per_page
+     * @return array
      */
     public function listAllWithContactLists(
         $debug = false,
-        int $contacts_per_page = 100
-    ): array {
+        $contacts_per_page = 100
+    ) {
         // aggiungo ai parametri della query i contactLists
         $query_params = [
             'include' => 'contactLists',
@@ -167,12 +169,16 @@ class Contacts extends Resource
      * Aggiorna l'account di un dato contatto. Serve però passare
      * NON l'id del contatto
      * MA l'id dell'associazione tra quel contatto e il vecchio account
+     *
+     * @param int|null $association_id
+     * @param int $contact_id
+     * @param int $account_id
+     * @return string
      */
-
     public function updateContactAccount(
-        ?int $association_id,
-        int $contact_id,
-        int $account_id
+        $association_id,
+        $contact_id,
+        $account_id
     ) {
         if ($association_id === null) {
             return $this->addContactToAccount($contact_id, $account_id);
@@ -193,8 +199,12 @@ class Contacts extends Resource
 
     /**
      * Crea un nuovo contatto associato ad un account
+     *
+     * @param array $contact
+     * @param int $account_id
+     * @return void
      */
-    public function createWithAccount(array $contact, int $account_id)
+    public function createWithAccount($contact, $account_id)
     {
         // creo il contatto e mi segno l'id
         $res = json_decode($this->create($contact), true);
@@ -205,13 +215,14 @@ class Contacts extends Resource
     }
 
     /**
-     * Bulk Import Contacts
-     *
      * Manda più richieste bulk per importare i contatti aggiungendo anche dei tag
      *
      * @see https://developers.activecampaign.com/reference#bulk-import-contacts
+     *
+     * @param array $contacts
+     * @return string
      */
-    public function bulkImport(array $contacts)
+    public function bulkImport($contacts)
     {
         $req = $this->client->getClient()->post('/api/3/import/bulk_import', [
             'json' => [
@@ -222,10 +233,6 @@ class Contacts extends Resource
         return $req->getBody()->getContents();
     }
 
-    // -----------------------------------------------------------
-    // CODICE DI MEDIATOOLKIT
-    // -----------------------------------------------------------
-
     /**
      * Create a contact
      *
@@ -234,7 +241,7 @@ class Contacts extends Resource
      * @param array $contact
      * @return string
      */
-    public function create(array $contact)
+    public function create($contact)
     {
         $req = $this->client->getClient()->post('/api/3/contacts', [
             'json' => [
@@ -253,7 +260,7 @@ class Contacts extends Resource
      * @param array $contact
      * @return string
      */
-    public function sync(array $contact)
+    public function sync($contact)
     {
         $req = $this->client->getClient()->post('/api/3/contact/sync', [
             'json' => [
@@ -272,7 +279,7 @@ class Contacts extends Resource
      * @param int $id
      * @return string
      */
-    public function get(int $id)
+    public function get($id)
     {
         $req = $this->client->getClient()->get('/api/3/contacts/' . $id);
 
@@ -287,7 +294,7 @@ class Contacts extends Resource
      * @param array $contact_list
      * @return string
      */
-    public function updateListStatus(array $contact_list)
+    public function updateListStatus($contact_list)
     {
         $req = $this->client->getClient()->post('/api/3/contactLists', [
             'json' => [
@@ -307,7 +314,7 @@ class Contacts extends Resource
      * @param array $contact
      * @return string
      */
-    public function update(int $id, array $contact)
+    public function update($id, $contact)
     {
         $req = $this->client->getClient()->put('/api/3/contacts/' . $id, [
             'json' => [
@@ -326,7 +333,7 @@ class Contacts extends Resource
      * @param int $id
      * @return bool
      */
-    public function delete(int $id)
+    public function delete($id)
     {
         $req = $this->client->getClient()->delete('/api/3/contacts/' . $id);
 
@@ -341,7 +348,7 @@ class Contacts extends Resource
      * @param int $id
      * @return string
      */
-    public function listAutomations(int $id)
+    public function listAutomations($id)
     {
         $req = $this->client
             ->getClient()
@@ -359,7 +366,7 @@ class Contacts extends Resource
      * @param int $tag_id L'id del tag che si vuole aggiungere al contatto
      * @return string La risposta JSON
      */
-    public function tag(int $contact_id, int $tag_id): string
+    public function tag($contact_id, $tag_id)
     {
         $req = $this->client->getClient()->post('/api/3/contactTags', [
             'json' => [
@@ -381,7 +388,7 @@ class Contacts extends Resource
      * @param int $id
      * @return string
      */
-    public function listContactTags(int $id)
+    public function listContactTags($id)
     {
         $req = $this->client
             ->getClient()
@@ -398,7 +405,7 @@ class Contacts extends Resource
      * @param int $contact_tag_id
      * @return string
      */
-    public function untag(int $contact_tag_id)
+    public function untag($contact_tag_id)
     {
         $req = $this->client
             ->getClient()
@@ -417,11 +424,8 @@ class Contacts extends Resource
      * @param int $offset
      * @return string
      */
-    public function listAll(
-        array $query_params = [],
-        int $limit = 20,
-        int $offset = 0
-    ) {
+    public function listAll($query_params = [], $limit = 20, $offset = 0)
+    {
         $query_params = array_merge($query_params, [
             'limit' => $limit,
             'offset' => $offset,
@@ -438,10 +442,11 @@ class Contacts extends Resource
      * List all custom fields
      *
      * @see https://developers.activecampaign.com/v3/reference#retrieve-fields-1
+     *
      * @param array $query_params
      * @return string
      */
-    public function listAllCustomFields(array $query_params = [])
+    public function listAllCustomFields($query_params = [])
     {
         $req = $this->client->getClient()->get('/api/3/fields', [
             'query' => $query_params,
@@ -460,11 +465,8 @@ class Contacts extends Resource
      * @param string $field_value
      * @return string
      */
-    public function createCustomFieldValue(
-        int $contact_id,
-        int $field_id,
-        string $field_value
-    ) {
+    public function createCustomFieldValue($contact_id, $field_id, $field_value)
+    {
         $req = $this->client->getClient()->post('/api/3/fieldValues', [
             'json' => [
                 'fieldValue' => [
@@ -486,7 +488,7 @@ class Contacts extends Resource
      * @param int $field_id
      * @return string
      */
-    public function retrieveCustomFieldValue(int $field_id)
+    public function retrieveCustomFieldValue($field_id)
     {
         $req = $this->client
             ->getClient()
@@ -507,10 +509,10 @@ class Contacts extends Resource
      * @return string
      */
     public function updateCustomFieldValue(
-        int $field_value_id,
-        int $contact_id,
-        int $field_id,
-        string $field_value
+        $field_value_id,
+        $contact_id,
+        $field_id,
+        $field_value
     ) {
         $req = $this->client
             ->getClient()
@@ -535,7 +537,7 @@ class Contacts extends Resource
      * @param int $field_value_id
      * @return bool
      */
-    public function deleteCustomFieldValue(int $field_value_id)
+    public function deleteCustomFieldValue($field_value_id)
     {
         $req = $this->client
             ->getClient()
@@ -548,10 +550,11 @@ class Contacts extends Resource
      * Remove contact from automation
      *
      * @see https://developers.activecampaign.com/reference#delete-a-contactautomation
+     *
      * @param int $contactAutomationId
      * @return bool
      */
-    public function removeAutomation(int $contactAutomationId)
+    public function removeAutomation($contactAutomationId)
     {
         $req = $this->client
             ->getClient()
@@ -571,9 +574,9 @@ class Contacts extends Resource
      * @return string
      */
     public function addContactToAccount(
-        int $contact_id,
-        int $account_id,
-        string $jobTitle = ''
+        $contact_id,
+        $account_id,
+        $jobTitle = ''
     ) {
         $req = $this->client->getClient()->post('/api/3/accountContacts', [
             'json' => [
@@ -592,10 +595,11 @@ class Contacts extends Resource
      * Get Current Contact Account Association
      *
      * @see https://developers.activecampaign.com/reference#list-all-associations
+     *
      * @param array $query_params
      * @return string
      */
-    public function getContactAccountAssociation(array $query_params = [])
+    public function getContactAccountAssociation($query_params = [])
     {
         $req = $this->client->getClient()->get('/api/3/accountContacts', [
             'query' => $query_params,

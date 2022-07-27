@@ -8,16 +8,23 @@ use PHPUnit\Framework\TestCase;
 abstract class ResourceTestCase extends TestCase
 {
     /**
+     * The Client instance.
+     *
      * @var Client
      */
     protected $client;
 
-    public function __construct(
-        string $name = null,
-        array $data = [],
-        string $dataName = ''
-    ) {
+    /**
+     * The Resource Test Case constructor.
+     *
+     * @param string|null $name
+     * @param array $data
+     * @param string $dataName
+     */
+    public function __construct($name = null, $data = [], $dataName = '')
+    {
         parent::__construct($name, $data, $dataName);
+
         $this->client = new Client(
             $_ENV['API_URL'],
             $_ENV['API_TOKEN'],

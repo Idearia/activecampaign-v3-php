@@ -2,6 +2,7 @@
 
 namespace Mediatoolkit\ActiveCampaign;
 
+use Closure;
 use Exception;
 use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
@@ -11,6 +12,7 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleLogMiddleware\LogMiddleware;
 use GuzzleHttp\Exception\ConnectException;
+use Psr\Log\LoggerInterface;
 
 class Client
 {
@@ -50,7 +52,7 @@ class Client
      * Event Tracking Key
      * Get yours from Settings > Tracking > Event Tracking > Event Key
      *
-     * @var string
+     * @var string|null
      */
     protected $event_tracking_key;
 
@@ -74,16 +76,33 @@ class Client
      * Le opzioni passate al client di Guzzle
      *
      * @see https://docs.guzzlephp.org/en/stable/request-options.html
+     *
      * @var array
      */
     protected $options;
 
-    /** @var \GuzzleHttp\Client */
+    /**
+     * The Guzzle HTTP Client instance
+     *
+     * @var \GuzzleHttp\Client
+     */
     private $client;
 
-    /** @var \GuzzleHttp\Client */
+    /**
+     * The Guzzle HTTP Event Tracking Client instance
+     *
+     * @var \GuzzleHttp\Client
+     */
     private $event_tracking_client;
 
+    /**
+     * The client constructor.
+     *
+     * @param string $api_url
+     * @param string $api_token
+     * @param string|null $event_tracking_actid
+     * @param string|null $event_tracking_key
+     */
     public function __construct(
         $api_url,
         $api_token,
@@ -172,6 +191,7 @@ class Client
      *
      * @see https://github.com/guzzle/guzzle/issues/1806#issuecomment-293931737
      *
+     * @param callable $middleware
      * @return $this
      */
     public function withMiddleware($middleware)
@@ -188,9 +208,11 @@ class Client
      *
      * @see https://github.com/guzzle/guzzle/issues/1806#issuecomment-293931737
      *
+     * @param int $retry_times
+     * @param float $retry_delay
      * @return $this
      */
-    public function withRetry(int $retry_times = 10, float $retry_delay = 0.5)
+    public function withRetry($retry_times = 10, $retry_delay = 0.5)
     {
         return $this->withMiddleware(
             Middleware::retry(
@@ -206,6 +228,7 @@ class Client
      *
      * @see https://github.com/gmponos/guzzle-log-middleware#handlers
      *
+     * @param LoggerInterface $logger
      * @return $this
      */
     public function withLog($logger)
@@ -215,6 +238,8 @@ class Client
 
     /**
      * Crea il client di Guzzle con le opzioni passate
+     *
+     * @return $this
      */
     public function create()
     {
@@ -225,6 +250,8 @@ class Client
 
     /**
      * Ritorna lo handlerStack del client Guzzle
+     *
+     * @return HandlerStack
      */
     protected function getHandlerStack()
     {
@@ -234,8 +261,11 @@ class Client
     /**
      * Data un'eccezione ritornata dal client, determina
      * se riprovare o meno a lanciare la richiesta.
+     *
+     * @param int $retry_times
+     * @return Closure
      */
-    public function retryDecider(int $retry_times)
+    public function retryDecider($retry_times)
     {
         return function (
             $retries,
@@ -282,9 +312,10 @@ class Client
     /**
      * delay 1s 2s 3s 4s 5s
      *
+     * @param float $retry_delay
      * @return callable
      */
-    public function retryDelay(float $retry_delay)
+    public function retryDelay($retry_delay)
     {
         return function ($numberOfRetries) use ($retry_delay) {
             return 1000 * $retry_delay * $numberOfRetries;

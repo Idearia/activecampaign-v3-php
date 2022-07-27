@@ -6,6 +6,9 @@ use Mediatoolkit\ActiveCampaign\Client;
 
 class ClientTest extends ResourceTestCase
 {
+    /**
+     * @return void
+     */
     public function testClient()
     {
         $this->assertEquals($_ENV['API_URL'], $this->client->getApiUrl());

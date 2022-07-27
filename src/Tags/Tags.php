@@ -6,6 +6,7 @@ use Mediatoolkit\ActiveCampaign\Resource;
 
 /**
  * Class Tags
+ *
  * @package Mediatoolkit\ActiveCampaign\Tags
  * @see https://developers.activecampaign.com/reference#tags
  */
@@ -13,11 +14,13 @@ class Tags extends Resource
 {
     /**
      * List all tags
+     *
      * @see https://developers.activecampaign.com/reference#retrieve-all-tags
+     *
      * @param array $query_params
      * @return string
      */
-    public function listAll(array $query_params = [])
+    public function listAll($query_params = [])
     {
         $req = $this->client->getClient()->get('/api/3/tags', [
             'query' => $query_params,
@@ -28,12 +31,14 @@ class Tags extends Resource
 
     /**
      * Create New Tag
+     *
      * @see https://developers.activecampaign.com/reference#create-a-new-tag
+     *
      * @param string $tagName
      * @param string $tagDescription
      * @return string
      */
-    public function createTag(string $tagName, string $tagDescription = '')
+    public function createTag($tagName, $tagDescription = '')
     {
         $req = $this->client->getClient()->post('/api/3/tags', [
             'json' => [

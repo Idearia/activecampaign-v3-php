@@ -20,7 +20,7 @@ class Accounts extends Resource
      * @param array $account
      * @return string
      */
-    public function create(array $account)
+    public function create($account)
     {
         $req = $this->client->getClient()->post('/api/3/accounts', [
             'json' => [
@@ -40,7 +40,7 @@ class Accounts extends Resource
      * @param array $account
      * @return string
      */
-    public function update(int $id, array $account)
+    public function update($id, $account)
     {
         $req = $this->client->getClient()->put('/api/3/accounts/' . $id, [
             'json' => [
@@ -59,7 +59,7 @@ class Accounts extends Resource
      * @param int $id
      * @return string
      */
-    public function delete(int $id)
+    public function delete($id)
     {
         $req = $this->client->getClient()->delete('/api/3/accounts/' . $id);
 
@@ -74,7 +74,7 @@ class Accounts extends Resource
      * @param int $id
      * @return string
      */
-    public function get(int $id)
+    public function get($id)
     {
         $req = $this->client->getClient()->get('/api/3/accounts/' . $id);
 
@@ -91,7 +91,7 @@ class Accounts extends Resource
      * @param int $offset
      * @return mixed
      */
-    public function listAll(array $query_params = [], $limit = 20, $offset = 0)
+    public function listAll($query_params = [], $limit = 20, $offset = 0)
     {
         $query_params = array_merge($query_params, [
             'limit' => $limit,
@@ -107,8 +107,11 @@ class Accounts extends Resource
 
     /**
      * Ottiene i custom field di un account
+     *
+     * @param int $account_id
+     * @return array
      */
-    public function getAccountCustomFields(int $account_id): array
+    public function getAccountCustomFields($account_id)
     {
         $req = $this->client
             ->getClient()
@@ -123,15 +126,18 @@ class Accounts extends Resource
     }
 
     /**
-     * List all accounts
+     * Elenca tutti gli account, iterando sulla paginazione
      *
-     * Li elenca tutti, iterando sulla paginazione
+     * @param array $query_params
+     * @param int $accounts_per_page
+     * @param bool $debug
+     * @return array
      */
     public function listAllLoop(
-        array $query_params = [],
-        int $accounts_per_page = 100,
+        $query_params = [],
+        $accounts_per_page = 100,
         $debug = false
-    ): array {
+    ) {
         // Risposta JSON dal server
         $res = $this->listAll($query_params, $accounts_per_page);
 
@@ -173,14 +179,17 @@ class Accounts extends Resource
     }
 
     /**
-     * List all accounts
+     * Elenca tutti gli account, iterando sulla paginazione
+     * e aggiunge pure i custom fields
      *
-     * Li elenca tutti, iterando sulla paginazione, e aggiunge pure i custom fields
+     * @param bool $debug
+     * @param int $accounts_per_page
+     * @return array
      */
     public function listAllWithCustomFields(
         $debug = false,
-        int $accounts_per_page = 100
-    ): array {
+        $accounts_per_page = 100
+    ) {
         // aggiungo ai parametri della query i contactLists
         $query_params = [
             'include' =>
@@ -249,10 +258,11 @@ class Accounts extends Resource
      * List all custom fields
      *
      * @see https://developers.activecampaign.com/reference#list-all-custom-fields
+     *
      * @param array $query_params
      * @return string
      */
-    public function listAllCustomFields(array $query_params = [])
+    public function listAllCustomFields($query_params = [])
     {
         $req = $this->client
             ->getClient()
@@ -265,12 +275,14 @@ class Accounts extends Resource
 
     /**
      * List all custom field values
-     *
-     * Ritorna null apparentemente per risposte troppo grosse (e.g. Autoluce)
+     * Ritorna null apparentemente per risposte troppo grosse
      *
      * @see https://developers.activecampaign.com/reference#list-all-custom-field-values-2
+     *
+     * @param array $query_params
+     * @return string
      */
-    public function listAllCustomFieldValues(array $query_params = [])
+    public function listAllCustomFieldValues($query_params = [])
     {
         $req = $this->client
             ->getClient()
@@ -282,8 +294,7 @@ class Accounts extends Resource
     }
 
     /**
-     * Bulk create custom field values [TESTATA SU POSTMAN]
-     *
+     * Bulk create custom field values
      * In realtà fa create or update
      *
      * @see https://developers.activecampaign.com/reference#bulk-create-a-custom-field-value-1
@@ -291,7 +302,7 @@ class Accounts extends Resource
      * @param array $customFieldValues
      * @return string
      */
-    public function bulkCreateCustomFieldValues(array $customFieldValues)
+    public function bulkCreateCustomFieldValues($customFieldValues)
     {
         $req = $this->client
             ->getClient()
