@@ -170,7 +170,7 @@ class Client
      * Attiva la modalità retry del client
      *
      * @see https://github.com/guzzle/guzzle/issues/1806#issuecomment-293931737
-     * @return Mediatoolkit\ActiveCampaign\Client
+     * @return $this
      */
     public function withMiddleware($middleware)
     {
@@ -185,7 +185,7 @@ class Client
      * Attiva la modalità retry del client
      *
      * @see https://github.com/guzzle/guzzle/issues/1806#issuecomment-293931737
-     * @return Mediatoolkit\ActiveCampaign\Client
+     * @return $this
      */
     public function withRetry(int $retry_times = 10, float $retry_delay = 0.5)
     {
@@ -207,7 +207,7 @@ class Client
      * @see https://github.com/gmponos/guzzle-log-middleware#handlers
      *
      * @see https://github.com/gmponos/guzzle-log-middleware
-     * @return Mediatoolkit\ActiveCampaign\Client
+     * @return $this
      */
     public function withLog($logger)
     {
