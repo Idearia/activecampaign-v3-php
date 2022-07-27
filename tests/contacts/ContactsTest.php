@@ -11,7 +11,7 @@ class ContactsTest extends ResourceTestCase
     private static $firstName;
     private static $lastName;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::$email = 'wearetesting@mailinator.com';
@@ -19,7 +19,7 @@ class ContactsTest extends ResourceTestCase
         self::$lastName = 'Testing';
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
         self::$email = null;

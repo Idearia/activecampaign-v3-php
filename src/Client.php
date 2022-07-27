@@ -2,6 +2,7 @@
 
 namespace Mediatoolkit\ActiveCampaign;
 
+use Exception;
 use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -9,7 +10,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleLogMiddleware\LogMiddleware;
-use Exception;
+use GuzzleHttp\Exception\ConnectException;
 
 class Client
 {
