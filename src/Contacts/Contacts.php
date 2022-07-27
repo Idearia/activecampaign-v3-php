@@ -194,7 +194,7 @@ class Contacts extends Resource
     /**
      * Crea un nuovo contatto associato ad un account
      */
-    public function createWithAccount(array $contact, string $account_id)
+    public function createWithAccount(array $contact, int $account_id)
     {
         // creo il contatto e mi segno l'id
         $res = json_decode($this->create($contact), true);
