@@ -23,9 +23,7 @@ class Lists extends Resource
     public function create($list)
     {
         $req = $this->client->getClient()->post('/api/3/lists', [
-            'json' => [
-                'list' => $list,
-            ],
+            'json' => compact('list'),
         ]);
 
         return $req->getBody()->getContents();
@@ -37,18 +35,18 @@ class Lists extends Resource
      * @see https://developers.activecampaign.com/reference#retrieve-a-list
      *
      * @param null $id
-     * @param array $query_params
+     * @param array $query
      * @return string
      */
-    public function retrieve($id = null, $query_params = [])
+    public function retrieve($id = null, $query = [])
     {
         $uri = '/api/3/lists';
+
         if (!is_null($id)) {
             $uri .= '/' . $id;
         }
-        $req = $this->client->getClient()->get($uri, [
-            'query' => $query_params,
-        ]);
+
+        $req = $this->client->getClient()->get($uri, compact('query'));
 
         return $req->getBody()->getContents();
     }

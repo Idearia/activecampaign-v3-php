@@ -52,18 +52,18 @@ class Contacts extends Resource
     /**
      * Elenca tutti i contatti, iterando sulla paginazione
      *
-     * @param array $query_params
+     * @param array $query
      * @param int $contacts_per_page
      * @param bool $debug
      * @return array
      */
     public function listAllLoop(
-        $query_params = [],
+        $query = [],
         $contacts_per_page = 100,
         $debug = false
     ) {
         // Risposta JSON dal server
-        $res = $this->listAll($query_params, $contacts_per_page);
+        $res = $this->listAll($query, $contacts_per_page);
 
         // Converto la risposta in array
         $res = json_decode($res, true);
@@ -81,7 +81,7 @@ class Contacts extends Resource
         // Loop sulle pagine
         for ($page = 1; $page < $pages; $page++) {
             $res = $this->listAll(
-                $query_params,
+                $query,
                 $contacts_per_page,
                 $page * $contacts_per_page
             );
@@ -115,12 +115,12 @@ class Contacts extends Resource
         $contacts_per_page = 100
     ) {
         // aggiungo ai parametri della query i contactLists
-        $query_params = [
+        $query = [
             'include' => 'contactLists',
         ];
 
         // Risposta JSON dal server
-        $res = $this->listAll($query_params, $contacts_per_page);
+        $res = $this->listAll($query, $contacts_per_page);
 
         // Converto la risposta in array
         $res = json_decode($res, true);
@@ -140,7 +140,7 @@ class Contacts extends Resource
         // Loop sulle pagine
         for ($page = 1; $page < $pages; $page++) {
             $res = $this->listAll(
-                $query_params,
+                $query,
                 $contacts_per_page,
                 $page * $contacts_per_page
             );
@@ -159,10 +159,7 @@ class Contacts extends Resource
             }
         }
 
-        return [
-            'contacts' => $contacts,
-            'contactLists' => $contactLists,
-        ];
+        return compact('contacts', 'contactLists');
     }
 
     /**
@@ -225,9 +222,7 @@ class Contacts extends Resource
     public function bulkImport($contacts)
     {
         $req = $this->client->getClient()->post('/api/3/import/bulk_import', [
-            'json' => [
-                'contacts' => $contacts,
-            ],
+            'json' => compact('contacts'),
         ]);
 
         return $req->getBody()->getContents();
@@ -244,9 +239,7 @@ class Contacts extends Resource
     public function create($contact)
     {
         $req = $this->client->getClient()->post('/api/3/contacts', [
-            'json' => [
-                'contact' => $contact,
-            ],
+            'json' => compact('contact'),
         ]);
 
         return $req->getBody()->getContents();
@@ -263,9 +256,7 @@ class Contacts extends Resource
     public function sync($contact)
     {
         $req = $this->client->getClient()->post('/api/3/contact/sync', [
-            'json' => [
-                'contact' => $contact,
-            ],
+            'json' => compact('contact'),
         ]);
 
         return $req->getBody()->getContents();
@@ -291,15 +282,13 @@ class Contacts extends Resource
      *
      * @see https://developers.activecampaign.com/reference#update-list-status-for-contact
      *
-     * @param array $contact_list
+     * @param array $contactList
      * @return string
      */
-    public function updateListStatus($contact_list)
+    public function updateListStatus($contactList)
     {
         $req = $this->client->getClient()->post('/api/3/contactLists', [
-            'json' => [
-                'contactList' => $contact_list,
-            ],
+            'json' => compact('contactList'),
         ]);
 
         return $req->getBody()->getContents();
@@ -317,9 +306,7 @@ class Contacts extends Resource
     public function update($id, $contact)
     {
         $req = $this->client->getClient()->put('/api/3/contacts/' . $id, [
-            'json' => [
-                'contact' => $contact,
-            ],
+            'json' => compact('contact'),
         ]);
 
         return $req->getBody()->getContents();
@@ -419,21 +406,18 @@ class Contacts extends Resource
      *
      * @see https://developers.activecampaign.com/reference#list-all-contacts
      *
-     * @param array $query_params
+     * @param array $query
      * @param int $limit
      * @param int $offset
      * @return string
      */
-    public function listAll($query_params = [], $limit = 20, $offset = 0)
+    public function listAll($query = [], $limit = 20, $offset = 0)
     {
-        $query_params = array_merge($query_params, [
-            'limit' => $limit,
-            'offset' => $offset,
-        ]);
+        $query = array_merge($query, compact('limit', 'offset'));
 
-        $req = $this->client->getClient()->get('/api/3/contacts', [
-            'query' => $query_params,
-        ]);
+        $req = $this->client
+            ->getClient()
+            ->get('/api/3/contacts', compact('query'));
 
         return $req->getBody()->getContents();
     }
@@ -443,14 +427,14 @@ class Contacts extends Resource
      *
      * @see https://developers.activecampaign.com/v3/reference#retrieve-fields-1
      *
-     * @param array $query_params
+     * @param array $query
      * @return string
      */
-    public function listAllCustomFields($query_params = [])
+    public function listAllCustomFields($query = [])
     {
-        $req = $this->client->getClient()->get('/api/3/fields', [
-            'query' => $query_params,
-        ]);
+        $req = $this->client
+            ->getClient()
+            ->get('/api/3/fields', compact('query'));
 
         return $req->getBody()->getContents();
     }
@@ -596,14 +580,14 @@ class Contacts extends Resource
      *
      * @see https://developers.activecampaign.com/reference#list-all-associations
      *
-     * @param array $query_params
+     * @param array $query
      * @return string
      */
-    public function getContactAccountAssociation($query_params = [])
+    public function getContactAccountAssociation($query = [])
     {
-        $req = $this->client->getClient()->get('/api/3/accountContacts', [
-            'query' => $query_params,
-        ]);
+        $req = $this->client
+            ->getClient()
+            ->get('/api/3/accountContacts', compact('query'));
 
         return $req->getBody()->getContents();
     }

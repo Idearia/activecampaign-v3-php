@@ -23,9 +23,7 @@ class Users extends Resource
     public function create($user)
     {
         $req = $this->client->getClient()->post('/api/3/users', [
-            'json' => [
-                'user' => $user,
-            ],
+            'json' => compact('user'),
         ]);
 
         return $req->getBody()->getContents();
@@ -37,18 +35,16 @@ class Users extends Resource
      * @see https://developers.activecampaign.com/reference#retrieve-a-user
      *
      * @param null $id
-     * @param array $query_params
+     * @param array $query
      * @return string
      */
-    public function retrieve($id = null, $query_params = [])
+    public function retrieve($id = null, $query = [])
     {
         $uri = '/api/3/users';
         if (!is_null($id)) {
             $uri .= '/' . $id;
         }
-        $req = $this->client->getClient()->get($uri, [
-            'query' => $query_params,
-        ]);
+        $req = $this->client->getClient()->get($uri, compact('query'));
 
         return $req->getBody()->getContents();
     }

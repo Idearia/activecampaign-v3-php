@@ -17,14 +17,12 @@ class Tags extends Resource
      *
      * @see https://developers.activecampaign.com/reference#retrieve-all-tags
      *
-     * @param array $query_params
+     * @param array $query
      * @return string
      */
-    public function listAll($query_params = [])
+    public function listAll($query = [])
     {
-        $req = $this->client->getClient()->get('/api/3/tags', [
-            'query' => $query_params,
-        ]);
+        $req = $this->client->getClient()->get('/api/3/tags', compact('query'));
 
         return $req->getBody()->getContents();
     }
@@ -34,19 +32,16 @@ class Tags extends Resource
      *
      * @see https://developers.activecampaign.com/reference#create-a-new-tag
      *
-     * @param string $tagName
-     * @param string $tagDescription
+     * @param string $tag
+     * @param string $description
+     * @param string $tagType
      * @return string
      */
-    public function createTag($tagName, $tagDescription = '')
+    public function createTag($tag, $description = '', $tagType = 'contact')
     {
         $req = $this->client->getClient()->post('/api/3/tags', [
             'json' => [
-                'tag' => [
-                    'tag' => $tagName,
-                    'tagType' => 'contact',
-                    'description' => $tagDescription,
-                ],
+                'tag' => compact('tag', 'description', 'tagType'),
             ],
         ]);
 

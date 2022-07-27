@@ -17,14 +17,14 @@ class SiteTracking extends Resource
      *
      * @see https://developers.activecampaign.com/reference#retrieve-site-tracking-status
      *
-     * @param array $query_params
+     * @param array $query
      * @return string
      */
-    public function retrieveStatus($query_params = [])
+    public function retrieveStatus($query = [])
     {
-        $req = $this->client->getClient()->get('api/3/siteTracking', [
-            'query' => $query_params,
-        ]);
+        $req = $this->client
+            ->getClient()
+            ->get('api/3/siteTracking', compact('query'));
 
         return $req->getBody()->getContents();
     }

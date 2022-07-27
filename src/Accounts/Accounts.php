@@ -23,9 +23,7 @@ class Accounts extends Resource
     public function create($account)
     {
         $req = $this->client->getClient()->post('/api/3/accounts', [
-            'json' => [
-                'account' => $account,
-            ],
+            'json' => compact('account'),
         ]);
 
         return $req->getBody()->getContents();
@@ -43,9 +41,7 @@ class Accounts extends Resource
     public function update($id, $account)
     {
         $req = $this->client->getClient()->put('/api/3/accounts/' . $id, [
-            'json' => [
-                'account' => $account,
-            ],
+            'json' => compact('account'),
         ]);
 
         return $req->getBody()->getContents();
@@ -86,21 +82,18 @@ class Accounts extends Resource
      *
      * @see https://developers.activecampaign.com/reference#list-all-accounts
      *
-     * @param array $query_params
+     * @param array $query
      * @param int $limit
      * @param int $offset
      * @return mixed
      */
-    public function listAll($query_params = [], $limit = 20, $offset = 0)
+    public function listAll($query = [], $limit = 20, $offset = 0)
     {
-        $query_params = array_merge($query_params, [
-            'limit' => $limit,
-            'offset' => $offset,
-        ]);
+        $query = array_merge($query, compact('limit', 'offset'));
 
-        $req = $this->client->getClient()->get('/api/3/accounts', [
-            'query' => $query_params,
-        ]);
+        $req = $this->client
+            ->getClient()
+            ->get('/api/3/accounts', compact('query'));
 
         return $req->getBody()->getContents();
     }
@@ -128,18 +121,18 @@ class Accounts extends Resource
     /**
      * Elenca tutti gli account, iterando sulla paginazione
      *
-     * @param array $query_params
+     * @param array $query
      * @param int $accounts_per_page
      * @param bool $debug
      * @return array
      */
     public function listAllLoop(
-        $query_params = [],
+        $query = [],
         $accounts_per_page = 100,
         $debug = false
     ) {
         // Risposta JSON dal server
-        $res = $this->listAll($query_params, $accounts_per_page);
+        $res = $this->listAll($query, $accounts_per_page);
 
         // Converto la risposta in array
         $res = json_decode($res, true);
@@ -157,7 +150,7 @@ class Accounts extends Resource
         // Loop sulle pagine
         for ($page = 1; $page < $pages; $page++) {
             $res = $this->listAll(
-                $query_params,
+                $query,
                 $accounts_per_page,
                 $page * $accounts_per_page
             );
@@ -191,13 +184,13 @@ class Accounts extends Resource
         $accounts_per_page = 100
     ) {
         // aggiungo ai parametri della query i contactLists
-        $query_params = [
+        $query = [
             'include' =>
                 'accountCustomFieldData.customerAccountCustomFieldMetum',
         ];
 
         // Risposta JSON dal server
-        $res = $this->listAll($query_params, $accounts_per_page);
+        $res = $this->listAll($query, $accounts_per_page);
 
         // Converto la risposta in array
         $res = json_decode($res, true);
@@ -218,7 +211,7 @@ class Accounts extends Resource
         // Loop sulle pagine
         for ($page = 1; $page < $pages; $page++) {
             $res = $this->listAll(
-                $query_params,
+                $query,
                 $accounts_per_page,
                 $page * $accounts_per_page
             );
@@ -247,11 +240,7 @@ class Accounts extends Resource
         // rimuovo eventuali copie inutili nei custom fields meta
         $customFieldsMeta = array_unique($customFieldsMeta, SORT_REGULAR);
 
-        return [
-            'accounts' => $accounts,
-            'customFields' => $customFields,
-            'customFieldsMeta' => $customFieldsMeta,
-        ];
+        return compact('accounts', 'customFields', 'customFieldsMeta');
     }
 
     /**
@@ -259,16 +248,14 @@ class Accounts extends Resource
      *
      * @see https://developers.activecampaign.com/reference#list-all-custom-fields
      *
-     * @param array $query_params
+     * @param array $query
      * @return string
      */
-    public function listAllCustomFields($query_params = [])
+    public function listAllCustomFields($query = [])
     {
         $req = $this->client
             ->getClient()
-            ->get('/api/3/accountCustomFieldMeta', [
-                'query' => $query_params,
-            ]);
+            ->get('/api/3/accountCustomFieldMeta', compact('query'));
 
         return $req->getBody()->getContents();
     }
@@ -279,16 +266,14 @@ class Accounts extends Resource
      *
      * @see https://developers.activecampaign.com/reference#list-all-custom-field-values-2
      *
-     * @param array $query_params
+     * @param array $query
      * @return string
      */
-    public function listAllCustomFieldValues($query_params = [])
+    public function listAllCustomFieldValues($query = [])
     {
         $req = $this->client
             ->getClient()
-            ->get('/api/3/accountCustomFieldData', [
-                'query' => $query_params,
-            ]);
+            ->get('/api/3/accountCustomFieldData', compact('query'));
 
         return $req->getBody()->getContents();
     }

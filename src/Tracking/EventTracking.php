@@ -30,16 +30,14 @@ class EventTracking extends Resource
      *
      * @see https://developers.activecampaign.com/v3/reference#create-a-new-event-name-only
      *
-     * @param string $event_name
+     * @param string $name
      * @return string
      */
-    public function createEvent($event_name)
+    public function createEvent($name)
     {
         $req = $this->client->getClient()->post('/api/3/eventTrackingEvents', [
             'json' => [
-                'eventTrackingEvent' => [
-                    'name' => $event_name,
-                ],
+                'eventTrackingEvent' => compact('name'),
             ],
         ]);
 
@@ -51,14 +49,14 @@ class EventTracking extends Resource
      *
      * @see https://developers.activecampaign.com/v3/reference#remove-event-name-only
      *
-     * @param string $event_name
+     * @param string $name
      * @return bool
      */
-    public function deleteEvent($event_name)
+    public function deleteEvent($name)
     {
         $req = $this->client
             ->getClient()
-            ->delete('/api/3/eventTrackingEvent/' . $event_name);
+            ->delete('/api/3/eventTrackingEvent/' . $name);
 
         return 200 === $req->getStatusCode();
     }
@@ -68,14 +66,14 @@ class EventTracking extends Resource
      *
      * @see https://developers.activecampaign.com/v3/reference#list-all-event-types
      *
-     * @param array $query_params
+     * @param array $query
      * @return string
      */
-    public function listAllEvents($query_params = [])
+    public function listAllEvents($query = [])
     {
-        $req = $this->client->getClient()->get('api/3/eventTrackingEvents', [
-            'query' => $query_params,
-        ]);
+        $req = $this->client
+            ->getClient()
+            ->get('api/3/eventTrackingEvents', compact('query'));
 
         return $req->getBody()->getContents();
     }
@@ -92,9 +90,7 @@ class EventTracking extends Resource
     {
         $req = $this->client->getClient()->put('/api/3/eventTracking/', [
             'json' => [
-                'eventTracking' => [
-                    'enabled' => $enabled,
-                ],
+                'eventTracking' => compact('enabled'),
             ],
         ]);
 
@@ -102,12 +98,12 @@ class EventTracking extends Resource
     }
 
     /**
-     * @param string $event_name
+     * @param string $event
      * @param null $event_data
      * @param null $email
      * @return string
      */
-    public function trackEvent($event_name, $event_data = null, $email = null)
+    public function trackEvent($event, $event_data = null, $email = null)
     {
         $client = $this->client->getEventTrackingClient();
 
@@ -115,18 +111,14 @@ class EventTracking extends Resource
             return '';
         }
 
-        $form_params = [
-            'event' => $event_name,
-        ];
+        $form_params = compact('event');
 
         if (!is_null($event_data)) {
             $form_params['eventdata'] = $event_data;
         }
 
         if (!is_null($email)) {
-            $form_params['visit'] = json_encode([
-                'email' => $email,
-            ]);
+            $form_params['visit'] = json_encode(compact('email'));
         }
 
         $form_params = array_merge(
@@ -134,9 +126,7 @@ class EventTracking extends Resource
             $client->getConfig('form_params')
         );
 
-        $req = $client->post('', [
-            'form_params' => $form_params,
-        ]);
+        $req = $client->post('', compact('form_params'));
 
         return $req->getBody()->getContents();
     }

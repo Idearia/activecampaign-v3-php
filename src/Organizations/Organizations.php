@@ -23,9 +23,7 @@ class Organizations extends Resource
     public function create($organization)
     {
         $req = $this->client->getClient()->post('/api/3/organizations', [
-            'json' => [
-                'organization' => $organization,
-            ],
+            'json' => compact('organization'),
         ]);
 
         return $req->getBody()->getContents();
@@ -58,9 +56,7 @@ class Organizations extends Resource
     public function update($id, $organization)
     {
         $req = $this->client->getClient()->put('/api/3/organizations/' . $id, [
-            'json' => [
-                'organization' => $organization,
-            ],
+            'json' => compact('organization'),
         ]);
 
         return $req->getBody()->getContents();
@@ -96,9 +92,7 @@ class Organizations extends Resource
         $req = $this->client
             ->getClient()
             ->delete('/api/3/organizations/bulk_delete', [
-                'query' => [
-                    'ids' => $ids,
-                ],
+                'query' => compact('ids'),
             ]);
 
         return $req->getBody()->getContents();
@@ -107,21 +101,18 @@ class Organizations extends Resource
     /**
      * List all organizations
      *
-     * @param array $query_params
+     * @param array $query
      * @param int $limit
      * @param int $offset
      * @return string
      */
-    public function listAll($query_params = [], $limit = 20, $offset = 0)
+    public function listAll($query = [], $limit = 20, $offset = 0)
     {
-        $query_params = array_merge($query_params, [
-            'limit' => $limit,
-            'offset' => $offset,
-        ]);
+        $query = array_merge($query, compact('limit', 'offset'));
 
-        $req = $this->client->getClient()->get('/api/3/organizations', [
-            'query' => $query_params,
-        ]);
+        $req = $this->client
+            ->getClient()
+            ->get('/api/3/organizations', compact('query'));
 
         return $req->getBody()->getContents();
     }
